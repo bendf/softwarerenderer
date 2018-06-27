@@ -1,7 +1,9 @@
 #include <catch.hpp>
 #include "targa.hpp"
+#include "model.hpp"
 #include <fstream>
 #include <glm/glm.hpp>
+
 
 
 unsigned int num_nonzero_pixels(Targa& t) 
@@ -158,5 +160,24 @@ TEST_CASE("TARGA", "[targa io]")
 
 TEST_CASE("OBJ Loading", "[obj io vertex]")
 {
+    SECTION("OBJ Parsing")
+    {
+        Model m;
 
+        REQUIRE(m.getNumVertices() == 0);
+        m.parseLine("v 1.0 1.0 1.0"); 
+        REQUIRE(m.getNumVertices() == 1);
+
+        REQUIRE(m.getNumUVs() == 0);
+        m.parseLine("vt 1.0 1.0 "); 
+        REQUIRE(m.getNumUVs() == 1);
+
+        REQUIRE(m.getNumNormals() == 0);
+        m.parseLine("vn 1.0 1.0  0.5"); 
+        REQUIRE(m.getNumNormals() == 1);
+
+        REQUIRE(m.getNumTriangles() == 0);
+        m.parseLine("f 1/1/1 2/2/2 3/3/3"); 
+        REQUIRE(m.getNumTriangles() == 1);
+    }
 }
