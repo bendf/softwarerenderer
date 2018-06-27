@@ -1,5 +1,6 @@
 #include <catch.hpp>
 #include "targa.hpp"
+#include <fstream>
 
 
 unsigned int num_nonzero_pixels(Targa& t) 
@@ -45,6 +46,19 @@ TEST_CASE("TARGA", "[targa io]")
         REQUIRE (r == 255);
         REQUIRE (g == 0); 
         REQUIRE (b == 0);
+    }
+
+
+    SECTION( "Targa writing")
+    {
+        Targa writeTest(100, 100);
+        writeTest.clear(1.0f, 0.0f, 1.0f);
+        std::fstream fileOut;
+        fileOut.open("targa_test.tga");
+        REQUIRE( fileOut.is_open());
+        writeTest.write(fileOut);
+        fileOut.close();
+        REQUIRE(!fileOut.is_open());
     }
 
     SECTION( "Targa clearing ")
