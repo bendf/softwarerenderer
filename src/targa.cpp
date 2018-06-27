@@ -15,6 +15,10 @@ struct TargaHeader standardHeader(uint16_t width, uint16_t height)
 }
 
 
+const constexpr Color Targa::white;
+const constexpr Color Targa::black;
+const constexpr Color Targa::red;
+
 void Targa::write(std::ostream& stream)
 {
     stream.write(reinterpret_cast<char const*>(&header), sizeof(header));
@@ -24,7 +28,7 @@ void Targa::write(std::ostream& stream)
 
 void Targa::getPixel(unsigned int x, unsigned int y, uint8_t& r, uint8_t& b, uint8_t& g) 
 {
-    if(x < 0 || x >= getWidth() || y < 0 || y >= getHeight())
+    if(!isInBounds(x,y))
     {
         std::stringstream err_stream;
         err_stream << "Read from pixel (" << x << "," << y 
@@ -40,9 +44,9 @@ void Targa::getPixel(unsigned int x, unsigned int y, uint8_t& r, uint8_t& b, uin
  
 }
 
-void Targa::setPixel(unsigned int x, unsigned int y, float r, float g, float b)
+void Targa::setPixel(unsigned int x, unsigned int y, Color c)
 {
-    if(x < 0 || x >= getWidth() || y < 0 || y >= getHeight())
+    if(!isInBounds(x,y))
     {
         std::stringstream err_stream;
         err_stream << "Write to pixel (" << x << "," << y 
@@ -52,23 +56,67 @@ void Targa::setPixel(unsigned int x, unsigned int y, float r, float g, float b)
     }
     unsigned int loc = NUM_COLOR_COMPONENTS * (y * getWidth() + x);
     //Yep, BGR component order. Because RGB would be too simple
-    data[loc+0] = (uint8_t)(b * 255);
-    data[loc+1] = (uint8_t)(g * 255);
-    data[loc+2] = (uint8_t)(r * 255);
+    data[loc+0] = (uint8_t)(c.b * 255);
+    data[loc+1] = (uint8_t)(c.g * 255);
+    data[loc+2] = (uint8_t)(c.r * 255);
 }
 
-void Targa::clear(float r, float b, float g) 
+bool Targa::isInBounds(int x, int y)
+{
+    return  x >= 0 && x < getWidth() && y >= 0 && y < getHeight();
+
+}
+
+void Targa::clear(Color c) 
 {
     for( int x = 0; x < getWidth(); x++)
     {
         for(int y =0; y < getHeight(); y++)
         {
-            setPixel(x,y,r,b,g);
+            setPixel(x,y,c);
         }
     }
 }
-void Targa::drawLine(int x0, int y0, int x1, int y1, float r, float b, float g) 
+
+void Targa::drawLine(int x0, int y0, int x1, int y1, Color c) 
 {
+    bool transpose = false;
+
+    float grad = float(y1 - y0) / float(x1 - x0);   
+
+    //Check for division by zero
+    if(x1 == x0 || std::abs(grad) > 1.0f)
+    {
+        std::swap(x0,y0);
+        std::swap(x1,y1);
+        grad = float(y1 - y0) / float(x1 - x0);   
+        transpose = true;
+    }
+
+    if(x1 < x0) {
+        std::swap(x0,x1);
+        std::swap(y0,y1);
+    }
+
+    for(int cx = x0; cx <= x1; cx++) 
+    {
+        int cy = y0 + (grad * (cx - x0));
+        
+        if(transpose)
+        {
+            if(isInBounds(cy,cx)) 
+            {
+                setPixel(cy,cx, c);
+            }
+        }
+        else
+        {
+            if(isInBounds(cx,cy))
+            {
+                setPixel(cx,cy, c);
+            }
+        }
+    }
 
 }
 
