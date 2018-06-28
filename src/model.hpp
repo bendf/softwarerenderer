@@ -1,5 +1,7 @@
 #include <glm/glm.hpp>
-
+#include <vector>
+#include <string>
+#include <tuple>
 typedef std::tuple<int,int,int> attribute;
 typedef std::tuple<attribute,attribute,attribute> triangle ;
 class Model 
@@ -11,11 +13,16 @@ class Model
         std::vector<glm::vec2> uvs;
         std::vector<triangle> triangles;
     public:
-        int getNumNormals();
-        int getNumVertices();
-        int getNumUVs();
-        int getNumTriangles();
+        size_t getNumVertices();
+        size_t getNumNormals();
+        size_t getNumUVs();
+        size_t getNumTriangles();
         void parseLine(std::string line);
+        void LoadAll(const char* filename);
+        glm::vec3 vertexAt(int index);
+        glm::vec3 normalAt(int index);
+        glm::vec2 UVAt(int index);
+        triangle triangleAt(int index);
 
 
 };

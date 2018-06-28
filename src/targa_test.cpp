@@ -1,3 +1,4 @@
+#define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
 #include <catch.hpp>
 #include "targa.hpp"
 #include "model.hpp"
@@ -160,24 +161,75 @@ TEST_CASE("TARGA", "[targa io]")
 
 TEST_CASE("OBJ Loading", "[obj io vertex]")
 {
-    SECTION("OBJ Parsing")
+    SECTION("OBJ line Parsing")
     {
         Model m;
 
         REQUIRE(m.getNumVertices() == 0);
         m.parseLine("v 1.0 1.0 1.0"); 
         REQUIRE(m.getNumVertices() == 1);
+        REQUIRE(m.vertexAt(0) == glm::vec3(1.0f,1.0f,1.0f));
 
         REQUIRE(m.getNumUVs() == 0);
         m.parseLine("vt 1.0 1.0 "); 
         REQUIRE(m.getNumUVs() == 1);
+        REQUIRE(m.UVAt(0) == glm::vec2(1.0f,1.0f));
 
         REQUIRE(m.getNumNormals() == 0);
         m.parseLine("vn 1.0 1.0  0.5"); 
         REQUIRE(m.getNumNormals() == 1);
+        REQUIRE(m.normalAt(0) == glm::vec3(1.0f,1.0f,0.5f));
 
         REQUIRE(m.getNumTriangles() == 0);
         m.parseLine("f 1/1/1 2/2/2 3/3/3"); 
         REQUIRE(m.getNumTriangles() == 1);
+        REQUIRE( m.triangleAt(0) == std::make_tuple(
+                    std::make_tuple(1,1,1),
+                    std::make_tuple(2,2,2),
+                    std::make_tuple(3,3,3)));
+    }
+
+
+    SECTION(" OBJ file parsing")
+    {
+            Model m;
+            REQUIRE_THROWS(m.LoadAll("fake_madeup_filename.ducks"));
+            m.LoadAll("../obj/african_head.obj");
+            REQUIRE(m.getNumVertices() == 1258);
+            REQUIRE(m.getNumNormals() == 1258);
+            REQUIRE(m.getNumUVs() == 1339);
+            REQUIRE(m.getNumTriangles() == 2492);
+    }
+
+
+    SECTION(" Draw obj file") 
+    {
+        Targa t(1000,1000);
+        Model m;
+        m.LoadAll("../obj/african_head.obj");
+
+        for(int i = 0; i < m.getNumTriangles(); i++)
+        {
+            triangle tri = m.triangleAt(i);
+            glm::vec3 verts[3];
+            verts[0] = m.vertexAt(std::get<0>(std::get<0>(tri)) -1);
+            verts[1] = m.vertexAt(std::get<0>(std::get<1>(tri)) -1);
+            verts[2] = m.vertexAt(std::get<0>(std::get<2>(tri)) -1);
+            for(int n =0; n <3; n++)
+            {
+                int x0 = (verts[(n+0)%3].x + 1.0f)* (t.getWidth() /2.0f);
+                int x1 = (verts[(n+1)%3].x + 1.0f)* (t.getWidth() /2.0f);
+                int y0 = (verts[(n+0)%3].y + 1.0f)* (t.getHeight() /2.0f);
+                int y1 = (verts[(n+1)%3].y + 1.0f)* (t.getHeight() /2.0f);
+                t.drawLine(x0,y0,x1,y1, Targa::red);
+            }
+            
+        }
+        std::ofstream headOut;
+        headOut.open("head_wireframe.tga");
+        REQUIRE(headOut.is_open());
+        t.write(headOut);
+        
+
     }
 }

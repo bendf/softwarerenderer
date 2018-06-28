@@ -50,5 +50,6 @@ class Targa
         void clear(Color c);
         void getPixel(unsigned int x, unsigned int y, uint8_t& r, uint8_t& b, uint8_t& g);
 
+
 };
 
