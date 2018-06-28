@@ -3,6 +3,15 @@
 #include <fstream>
 #include <exception>
 
+bool operator==(const Vertex& lhs, const Vertex& rhs)
+{
+    return (lhs.posIndex == rhs.posIndex) && (lhs.uvIndex == rhs.uvIndex) && (lhs.normalIndex == rhs.normalIndex);
+}
+
+bool operator==(const Triangle& lhs, const Triangle& rhs)
+{
+    return (lhs.a == rhs.a) && (lhs.b == rhs.b) && (lhs.c == rhs.c);
+}
 size_t Model::getNumVertices()
 {
     return vertices.size();
@@ -39,7 +48,7 @@ glm::vec2 Model::UVAt(int index)
     return uvs.at(index);
 }
 
-triangle Model::triangleAt(int index)
+Triangle Model::triangleAt(int index)
 {
     return triangles.at(index);
 }
@@ -96,10 +105,11 @@ void Model::parseLine(std::string line)
         {
             iss >> vi[n] >> ctrash >> uvi[n] >> ctrash >> ni[n];
         }
-        triangle tri = std::make_tuple<attribute,attribute,attribute>(
-                                       std::make_tuple(vi[0],uvi[0],ni[0]),
-                                       std::make_tuple(vi[1],uvi[1],ni[1]),
-                                       std::make_tuple(vi[2],uvi[2],ni[2]));
+        Triangle tri = {
+            .a = {vi[0]-1, uvi[0]-1, ni[0]-1},
+            .b = {vi[1]-1, uvi[1]-1, ni[1]-1},
+            .c = {vi[2]-1, uvi[2]-1, ni[2]-1}
+        };
         triangles.push_back(tri);
 
     }

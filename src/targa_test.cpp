@@ -183,10 +183,13 @@ TEST_CASE("OBJ Loading", "[obj io vertex]")
         REQUIRE(m.getNumTriangles() == 0);
         m.parseLine("f 1/1/1 2/2/2 3/3/3"); 
         REQUIRE(m.getNumTriangles() == 1);
-        REQUIRE( m.triangleAt(0) == std::make_tuple(
-                    std::make_tuple(1,1,1),
-                    std::make_tuple(2,2,2),
-                    std::make_tuple(3,3,3)));
+        struct Vertex v0 = {0,0,0};
+        struct Vertex v1 = {1,1,1};
+        struct Vertex v2 = {2,2,2};
+        struct Triangle  tri= {.a = v0, .b = v1, .c = v2};
+        REQUIRE(m.triangleAt(0).a == tri.a);
+        REQUIRE(m.triangleAt(0).b == tri.b);
+        REQUIRE(m.triangleAt(0).c == tri.c);
     }
 
 
@@ -210,11 +213,11 @@ TEST_CASE("OBJ Loading", "[obj io vertex]")
 
         for(int i = 0; i < m.getNumTriangles(); i++)
         {
-            triangle tri = m.triangleAt(i);
+            Triangle tri = m.triangleAt(i);
             glm::vec3 verts[3];
-            verts[0] = m.vertexAt(std::get<0>(std::get<0>(tri)) -1);
-            verts[1] = m.vertexAt(std::get<0>(std::get<1>(tri)) -1);
-            verts[2] = m.vertexAt(std::get<0>(std::get<2>(tri)) -1);
+            verts[0] = m.vertexAt(tri.a.posIndex);
+            verts[1] = m.vertexAt(tri.b.posIndex);
+            verts[2] = m.vertexAt(tri.c.posIndex);
             for(int n =0; n <3; n++)
             {
                 int x0 = (verts[(n+0)%3].x + 1.0f)* (t.getWidth() /2.0f);

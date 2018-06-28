@@ -2,6 +2,7 @@
 #include <cmath>
 #include <exception>
 #include <sstream>
+
 uint16_t Targa::getWidth() { return header.width; }
 uint16_t Targa::getHeight() { return header.height; }
 
