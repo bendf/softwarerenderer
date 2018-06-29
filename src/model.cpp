@@ -72,6 +72,7 @@ void Model::LoadAll(const char* filename)
         parseLine(line);
     }
 }
+
 void Model::parseLine(std::string line)
 {
     std::stringstream iss(line);

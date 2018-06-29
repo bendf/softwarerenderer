@@ -78,6 +78,8 @@ TEST_CASE("TARGA", "[targa io]")
 
     SECTION( "Targa Line Drawing ") 
     {
+
+        
         Targa lineTest(100, 100);
         SECTION ("point order is irrelevant")
         {
@@ -154,6 +156,37 @@ TEST_CASE("TARGA", "[targa io]")
             lineTest.drawLine(20, 0, 0, 99, Targa::white);
             REQUIRE(num_nonzero_pixels(lineTest) == 100);
         }
+        SECTION("Line from (x,y) to (x,y) -- aka same location")
+        {
+            lineTest.drawLine(50,50,50,50, Targa::red);
+            REQUIRE(num_nonzero_pixels(lineTest) == 1);
+            
+        }
+    }
+
+    SECTION( "Targa Triangle Drawing")
+    {
+        
+        Targa triangleTest(100,100);
+        //Forwards
+        triangleTest.drawTriangle(0,0, 50,50, 99,20, Targa::red);
+
+        CHECK( num_nonzero_pixels(triangleTest) == 2002);
+        //Order of points has no effect
+        triangleTest.drawTriangle(50,50, 0,0, 99,20, Targa::red);
+        CHECK(num_nonzero_pixels(triangleTest) == 2002);
+        //Order of points has no effect
+        triangleTest.drawTriangle(99,20,50,50, 0,0, Targa::red);
+        CHECK(num_nonzero_pixels(triangleTest) == 2002);
+
+        //Draw triangle extending beyond bounds
+        triangleTest.drawTriangle(-20,-20, 50, 80, 150, 5,Targa::white);
+
+        std::ofstream triangleOut;
+        triangleOut.open("triangle.tga");
+        REQUIRE( triangleOut.is_open());
+        triangleTest.write(triangleOut);
+        
     }
     
 }
@@ -205,7 +238,7 @@ TEST_CASE("OBJ Loading", "[obj io vertex]")
     }
 
 
-    SECTION(" Draw obj file") 
+    SECTION(" Draw obj file wireframe") 
     {
         Targa t(1000,1000);
         Model m;
@@ -232,7 +265,40 @@ TEST_CASE("OBJ Loading", "[obj io vertex]")
         headOut.open("head_wireframe.tga");
         REQUIRE(headOut.is_open());
         t.write(headOut);
-        
-
     }
+
+    SECTION(" Draw obj file triangles") 
+    {
+        Targa t(1024,1024);
+        t.clear(Targa::black);
+        Model m;
+        m.LoadAll("../obj/african_head.obj");
+
+        for(int i = 0; i < m.getNumTriangles(); i++)
+        {
+            Triangle tri = m.triangleAt(i);
+            glm::vec3 verts[3];
+            verts[0] = m.vertexAt(tri.a.posIndex);
+            verts[1] = m.vertexAt(tri.b.posIndex);
+            verts[2] = m.vertexAt(tri.c.posIndex);
+            //for(int n =0; n <3; n++)
+            //{
+            int x0 = (verts[0].x + 1.0f)* (t.getWidth() /2.0f);
+            int x1 = (verts[1].x + 1.0f)* (t.getWidth() /2.0f);
+            int x2 = (verts[2].x + 1.0f)* (t.getWidth() /2.0f);
+
+            int y0 = (verts[0].y + 1.0f)* (t.getHeight() /2.0f);
+            int y1 = (verts[1].y + 1.0f)* (t.getHeight() /2.0f);
+            int y2 = (verts[2].y + 1.0f)* (t.getHeight() /2.0f);
+
+            t.drawTriangle(x0,y0, x1,y1, x2,y2, i %2 == 0 ? Targa::white : Targa::red);
+            //}
+            
+        }
+        std::ofstream headOut;
+        headOut.open("head_triangle.tga");
+        REQUIRE(headOut.is_open());
+        t.write(headOut);
+    }
+
 }
