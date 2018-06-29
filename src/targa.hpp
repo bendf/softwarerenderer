@@ -2,7 +2,8 @@
 #include <ostream>
 #include <glm/glm.hpp>
 
-typedef glm::vec3 Color;
+typedef glm::vec3 FloatColor;
+typedef glm::ivec2 ImagePoint;
 
 struct TargaHeader
 {
@@ -28,29 +29,38 @@ struct TargaHeader
     uint8_t image_descriptor;
 };
 
+struct TargaColor
+{
+    uint8_t b;
+    uint8_t g;
+    uint8_t r;
+};
+TargaColor toTargaColor(FloatColor fc);
 
 class Targa 
 {
     private:
-        struct TargaHeader header;
-        uint8_t* data;
-        const unsigned int NUM_COLOR_COMPONENTS = 3;
+        TargaColor* data;
+        uint16_t width;
+        uint16_t height;
+        TargaHeader generateHeader();
     public:
-        static const constexpr Color white = glm::vec3(1.0f,1.0f,1.0f);
-        static const constexpr Color red = glm::vec3(1.0f,0.0f,0.0f);
-        static const constexpr Color black = glm::vec3(0.0f,0.0f,0.0f);
-        static const constexpr Color green = glm::vec3(0.0f,1.0f,0.0f);
+        static const constexpr FloatColor white = glm::vec3(1.0f,1.0f,1.0f);
+        static const constexpr FloatColor red = glm::vec3(1.0f,0.0f,0.0f);
+        static const constexpr FloatColor black = glm::vec3(0.0f,0.0f,0.0f);
+        static const constexpr FloatColor green = glm::vec3(0.0f,1.0f,0.0f);
 
         uint16_t getWidth();
         uint16_t getHeight();
         Targa(uint16_t width, uint16_t height);
+        ~Targa();
         bool isInBounds(int x, int y);
         void write(std::ostream& stream);
-        void setPixel(int x, int y, Color c);
-        void drawLine(int x0, int y0, int x1, int y1, Color c);
-        void clear(Color c);
-        void getPixel(unsigned int x, unsigned int y, uint8_t& r, uint8_t& b, uint8_t& g);
-        void drawTriangle(int x0, int y0, int x1, int y1, int x2, int y2, Color c);
+        void setPixel(int x, int y, FloatColor color);
+        void drawLine(int x0, int y0, int x1, int y1, FloatColor color);
+        void clear(FloatColor color);
+        TargaColor getPixel(unsigned int x, unsigned int y);
+        void drawTriangle(int x0, int y0, int x1, int y1, int x2, int y2, FloatColor color);
 
 
 };

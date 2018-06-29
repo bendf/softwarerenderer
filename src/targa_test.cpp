@@ -14,9 +14,8 @@ unsigned int num_nonzero_pixels(Targa& t)
    {
        for(int y =0; y < t.getHeight(); y++)
        {
-           uint8_t r,g,b;
-           t.getPixel(x,y,r,g,b);
-           if(r >0 || g > 0 || b > 0)
+           TargaColor color = t.getPixel(x,y);
+           if(color.r >0 || color.g > 0 || color.b > 0)
            {
                acc++;
            }
@@ -36,19 +35,18 @@ TEST_CASE("TARGA", "[targa io]")
         REQUIRE(t.getHeight() == height);
  
         //Out of bounds
-        REQUIRE_THROWS( t.setPixel(1024, 1024, Targa::white));
-        REQUIRE_THROWS( t.setPixel(-1, -1, Targa::white));
+        REQUIRE_NOTHROW( t.setPixel(1024, 1024, Targa::white));
+        REQUIRE_NOTHROW( t.setPixel(-1, -1, Targa::white));
 
-        uint8_t r,g,b;
-        REQUIRE_THROWS( t.getPixel(-1,-1, r,g,b));
-        REQUIRE_THROWS( t.getPixel(1024,1024, r,g,b));
+        REQUIRE_THROWS( t.getPixel(-1,-1));
+        REQUIRE_THROWS( t.getPixel(1024,1024));
 
         //Writing
         t.setPixel(0,0, Targa::red);
-        t.getPixel(0,0,r,g,b); 
-        REQUIRE (r == 255);
-        REQUIRE (g == 0); 
-        REQUIRE (b == 0);
+        TargaColor color = t.getPixel(0,0); 
+        REQUIRE (color.r == 255);
+        REQUIRE (color.g == 0); 
+        REQUIRE (color.b == 0);
     }
 
     SECTION( "Targa writing")
@@ -78,9 +76,8 @@ TEST_CASE("TARGA", "[targa io]")
 
     SECTION( "Targa Line Drawing ") 
     {
-
-        
         Targa lineTest(100, 100);
+        lineTest.clear(Targa::black);
         SECTION ("point order is irrelevant")
         {
             //Big diagonal line

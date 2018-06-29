@@ -4,32 +4,43 @@
 #include <sstream>
 #include<cstdlib>
 
-uint16_t Targa::getWidth() { return header.width; }
-uint16_t Targa::getHeight() { return header.height; }
-
-struct TargaHeader standardHeader(uint16_t width, uint16_t height)
+TargaColor toTargaColor(FloatColor fc)
 {
-    struct TargaHeader th = 
+    TargaColor tc;
+    tc.b = (uint8_t)(fc.b * 255);
+    tc.g = (uint8_t)(fc.g * 255);
+    tc.r = (uint8_t)(fc.r * 255);
+    return tc;
+}
+
+
+
+uint16_t Targa::getWidth() { return width; }
+uint16_t Targa::getHeight() { return height; }
+
+struct TargaHeader Targa::generateHeader()
+{
+    struct TargaHeader header = 
     {
         0, 0, 2, {0, 0, 0, 0, 0}, 0, 0, width, height, 24, 0
     };
-    return th;
+    return header;
 }
 
-
-const constexpr Color Targa::white;
-const constexpr Color Targa::black;
-const constexpr Color Targa::red;
-const constexpr Color Targa::green;
+const constexpr FloatColor Targa::white;
+const constexpr FloatColor Targa::black;
+const constexpr FloatColor Targa::red;
+const constexpr FloatColor Targa::green;
 
 void Targa::write(std::ostream& stream)
 {
+    struct TargaHeader header = generateHeader();
     stream.write(reinterpret_cast<char const*>(&header), sizeof(header));
-    stream.write(reinterpret_cast<char const*>(data), getWidth() * getHeight() * NUM_COLOR_COMPONENTS);
+    stream.write(reinterpret_cast<char const*>(data), width * height * sizeof(TargaColor));
 }
 
 
-void Targa::getPixel(unsigned int x, unsigned int y, uint8_t& r, uint8_t& b, uint8_t& g) 
+TargaColor Targa::getPixel(unsigned int x, unsigned int y) 
 {
     if(!isInBounds(x,y))
     {
@@ -39,38 +50,28 @@ void Targa::getPixel(unsigned int x, unsigned int y, uint8_t& r, uint8_t& b, uin
                    << "," << getHeight() << ")";
         throw std::out_of_range(err_stream.str());
     }
-
-    unsigned int loc = NUM_COLOR_COMPONENTS * (y * getWidth() + x);
-    b = data[loc+0];
-    g = data[loc+1];
-    r = data[loc+2];
+    unsigned int loc = (width*y) + x;
+    return data[loc];
  
 }
 
-void Targa::setPixel(int x, int y, Color c)
+void Targa::setPixel(int x, int y, FloatColor c)
 {
-    if(!isInBounds(x,y))
+    if(isInBounds(x,y))
     {
-        std::stringstream err_stream;
-        err_stream << "Write to pixel (" << x << "," << y 
-                   << ") in image of size (" << getWidth() 
-                   << "," << getHeight() << ")";
-        throw std::out_of_range(err_stream.str());
+        unsigned int loc = (width * y) + x;
+        //Yep, BGR component order. Because RGB would be too simple
+        data[loc] = toTargaColor(c);
     }
-    unsigned int loc = NUM_COLOR_COMPONENTS * (y * getWidth() + x);
-    //Yep, BGR component order. Because RGB would be too simple
-    data[loc+0] = (uint8_t)(c.b * 255);
-    data[loc+1] = (uint8_t)(c.g * 255);
-    data[loc+2] = (uint8_t)(c.r * 255);
 }
 
 bool Targa::isInBounds(int x, int y)
 {
-    return  x >= 0 && x < getWidth() && y >= 0 && y < getHeight();
-
+    return  x >= 0 && x < getWidth() &&
+            y >= 0 && y < getHeight();
 }
 
-void Targa::clear(Color c) 
+void Targa::clear(FloatColor c) 
 {
     for( int x = 0; x < getWidth(); x++)
     {
@@ -90,17 +91,8 @@ glm::vec3 randomColor()
     return glm::vec3(r,g,b);
 }
 
-void Targa::drawTriangle(int x0, int y0, int x1, int y1, int x2, int y2, Color c)
+void Targa::drawTriangle(int x0, int y0, int x1, int y1, int x2, int y2, FloatColor c)
 {
-    glm::vec3 p0(x0,y0,0);
-    glm::vec3 p1(x1,y1,0);
-    glm::vec3 p2(x2,y2,0);
-
-    glm::vec3 norm = glm::cross(p1-p0,p2-p0);
-    if(norm.z < 0.0f)
-    {
-        return;
-    }
 
     if(y1 > y0)
     {
@@ -158,7 +150,7 @@ void Targa::drawTriangle(int x0, int y0, int x1, int y1, int x2, int y2, Color c
 
     
 }
-void Targa::drawLine(int x0, int y0, int x1, int y1, Color c) 
+void Targa::drawLine(int x0, int y0, int x1, int y1, FloatColor c) 
 {
     bool transpose = false;
     if((x0 == x1) && (y0 == y1))
@@ -210,7 +202,12 @@ void Targa::drawLine(int x0, int y0, int x1, int y1, Color c)
 
 Targa::Targa(uint16_t width, uint16_t height) 
 {
-   header = standardHeader(width, height); 
-   data = new uint8_t[width*height*NUM_COLOR_COMPONENTS];
+   data = new TargaColor[width*height];
+   this->width = width;
+   this->height = height;
+}
+Targa::~Targa()
+{
+    delete data;
 }
 
