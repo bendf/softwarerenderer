@@ -13,8 +13,6 @@ TargaColor toTargaColor(FloatColor fc)
     return tc;
 }
 
-
-
 uint16_t Targa::getWidth() { return width; }
 uint16_t Targa::getHeight() { return height; }
 
@@ -40,35 +38,35 @@ void Targa::write(std::ostream& stream)
 }
 
 
-TargaColor Targa::getPixel(unsigned int x, unsigned int y) 
+TargaColor Targa::getPixel(PixelCoord p) 
 {
-    if(!isInBounds(x,y))
+    if(!isInBounds(p))
     {
         std::stringstream err_stream;
-        err_stream << "Read from pixel (" << x << "," << y 
+        err_stream << "Read from pixel (" << p.x << "," << p.y 
                    << ") in image of size (" << getWidth() 
                    << "," << getHeight() << ")";
         throw std::out_of_range(err_stream.str());
     }
-    unsigned int loc = (width*y) + x;
+    unsigned int loc = (width*p.y) + p.x;
     return data[loc];
  
 }
 
-void Targa::setPixel(int x, int y, FloatColor c)
+void Targa::setPixel(PixelCoord p, FloatColor color)
 {
-    if(isInBounds(x,y))
+    if(isInBounds(p))
     {
-        unsigned int loc = (width * y) + x;
+        unsigned int loc = (width * p.y) + p.x;
         //Yep, BGR component order. Because RGB would be too simple
-        data[loc] = toTargaColor(c);
+        data[loc] = toTargaColor(color);
     }
 }
 
-bool Targa::isInBounds(int x, int y)
+bool Targa::isInBounds(PixelCoord p)
 {
-    return  x >= 0 && x < getWidth() &&
-            y >= 0 && y < getHeight();
+    return  p.x >= 0 && p.x < getWidth() &&
+            p.y >= 0 && p.y < getHeight();
 }
 
 void Targa::clear(FloatColor c) 
@@ -77,12 +75,12 @@ void Targa::clear(FloatColor c)
     {
         for(int y =0; y < getHeight(); y++)
         {
-            setPixel(x,y,c);
+            setPixel(glm::ivec2(x,y),c);
         }
     }
 }
 
-glm::vec3 randomColor()
+FloatColor randomColor()
 {
     float r,g,b;
     r = float(rand()) / float(RAND_MAX);
@@ -91,113 +89,107 @@ glm::vec3 randomColor()
     return glm::vec3(r,g,b);
 }
 
-void Targa::drawTriangle(int x0, int y0, int x1, int y1, int x2, int y2, FloatColor c)
+void Targa::drawTriangle(PixelCoord p0, PixelCoord p1, PixelCoord p2, FloatColor c)
 {
 
-    if(y1 > y0)
+    if(p1.y > p2.y)
     {
-        std::swap(y1,y0);
-        std::swap(x1,x0);
+        std::swap(p0,p1);
     }
-    if(y2 > y0)
+    if(p2.y > p0.y)
     {
-        std::swap(y0,y2);
-        std::swap(x0,x2);
+        std::swap(p0,p2);
     }
-    if(y2 > y1)
+    if(p2.y > p1.y)
     {
-        std::swap(y1,y2);
-        std::swap(x1,x2);
+        std::swap(p1,p2);
     }
 
+    FloatColor col = randomColor();
     //avoid division by zero
-    if(y0 == y1)
+    if(p0.y == p1.y)
     {
-        drawLine(x0,y0, x1,y1,Targa::green);
+        drawLine(p0, p1,Targa::green);
     } 
     else 
     {
-        glm::vec3 col = randomColor(); 
-        for(int y = y0; y >=y1; y--)
+        for(int y = p0.y; y >=p1.y; y--)
         {
 
-            float gradStart = float(x1 - x0) / float(y1 - y0);
-            int xStart = x0 + gradStart * (y - y0);
-            float gradEnd = float(x2 - x0) / float(y2 - y0);
-            int xEnd = x0 +  gradEnd * (y - y0);
-            drawLine(xStart,y, xEnd, y, col);
+            float gradStart = float(p1.x - p0.x) / float(p1.y - p0.y);
+            int xStart = p0.x + gradStart * (y - p0.y);
+            float gradEnd = float(p2.x - p0.x) / float(p2.y - p0.y);
+            int xEnd = p0.x +  gradEnd * (y - p0.y);
+            drawLine(glm::ivec2(xStart,y), glm::ivec2(xEnd,y), col);
         }
     }
 
     //Avoid division by zero
-    if(y1 == y2)
+    if(p1.y == p2.y)
     {
-        drawLine(x1,y1, x2,y2,Targa::green);
+        drawLine(p1, p2, Targa::green);
     }
     else 
     {
 
-        glm::vec3 col = randomColor();
-        for(int y = y2; y <=y1; y++)
+        for(int y = p2.y; y <=p1.y; y++)
         {
-            float gradStart = float(x1 - x2) / float(y1 - y2);
-            int xStart = x2 + gradStart * (y - y2);
-            float gradEnd = float(x0 - x2) / float(y0 - y2);
-            int xEnd = x2 +  gradEnd * (y - y2);
-            drawLine(xStart,y, xEnd, y,col );
+            float gradStart = float(p1.x - p2.x) / float(p1.y - p2.y);
+            int xStart = p2.x + gradStart * (y - p2.y);
+            float gradEnd = float(p0.x - p2.x) / float(p0.y - p2.y);
+            int xEnd = p2.x +  gradEnd * (y - p2.y);
+            drawLine(glm::ivec2(xStart,y), glm::ivec2(xEnd, y),col );
         }
     } 
 
     
 }
-void Targa::drawLine(int x0, int y0, int x1, int y1, FloatColor c) 
+void Targa::drawLine(PixelCoord p0, PixelCoord p1, FloatColor c) 
 {
     bool transpose = false;
-    if((x0 == x1) && (y0 == y1))
+    if(p0 == p1)
     {
-        if(isInBounds(x0,y0))
-        {
-            setPixel(x0,y0,c);
-        }
+        setPixel(p0,c);
         return;
     }
 
-    float grad = float(y1 - y0) / float(x1 - x0);   
+    float grad = float(p1.y - p0.y) / float(p1.x - p0.x);   
 
     //Check for division by zero
-    if(x1 == x0 || std::abs(grad) > 1.0f)
+    if(p1.x == p0.x || std::abs(grad) > 1.0f)
     {
-        std::swap(x0,y0);
-        std::swap(x1,y1);
-        grad = float(y1 - y0) / float(x1 - x0);   
+        std::swap(p0.x, p0.y);
+        std::swap(p1.x, p1.y);
+        grad = float(p1.y - p0.y) / float(p1.x - p0.x);   
         transpose = true;
     }
 
-    if(x1 < x0) {
-        std::swap(x0,x1);
-        std::swap(y0,y1);
+    if(p1.x < p0.x) {
+        std::swap(p0,p1);
     }
 
-    for(int cx = x0; cx <= x1; cx++) 
+    for(int cx = p0.x; cx <= p1.x; cx++) 
     {
-        int cy = y0 + (grad * (cx - x0));
+        int cy = p0.y + (grad * (cx - p0.x));
         
         if(transpose)
         {
-            if(isInBounds(cy,cx)) 
-            {
-                setPixel(cy,cx, c);
-            }
+                setPixel(glm::ivec2(cy,cx), c);
         }
         else
         {
-            if(isInBounds(cx,cy))
-            {
-                setPixel(cx,cy, c);
-            }
+                setPixel(glm::ivec2(cx,cy), c);
         }
     }
 
+}
+
+PixelCoord Targa::fromClip(ClipCoord cc)
+{
+    glm::ivec2 pc;
+    pc.x = (cc.x + 1.0f) * (width / 2.0f);
+    pc.y = (cc.y + 1.0f) * (height / 2.0f);
+    return pc;
 }
 
 Targa::Targa(uint16_t width, uint16_t height) 

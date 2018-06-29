@@ -3,7 +3,8 @@
 #include <glm/glm.hpp>
 
 typedef glm::vec3 FloatColor;
-typedef glm::ivec2 ImagePoint;
+typedef glm::ivec2 PixelCoord;
+typedef glm::vec3 ClipCoord;
 
 struct TargaHeader
 {
@@ -50,17 +51,18 @@ class Targa
         static const constexpr FloatColor black = glm::vec3(0.0f,0.0f,0.0f);
         static const constexpr FloatColor green = glm::vec3(0.0f,1.0f,0.0f);
 
+        PixelCoord fromClip(ClipCoord cc);
         uint16_t getWidth();
         uint16_t getHeight();
+        TargaColor getPixel(PixelCoord p);
         Targa(uint16_t width, uint16_t height);
         ~Targa();
-        bool isInBounds(int x, int y);
+        bool isInBounds(PixelCoord);
         void write(std::ostream& stream);
-        void setPixel(int x, int y, FloatColor color);
-        void drawLine(int x0, int y0, int x1, int y1, FloatColor color);
+        void setPixel(PixelCoord p, FloatColor color);
+        void drawLine(PixelCoord p0, PixelCoord p1, FloatColor color);
+        void drawTriangle(PixelCoord p0, PixelCoord p1, PixelCoord p2, FloatColor color);
         void clear(FloatColor color);
-        TargaColor getPixel(unsigned int x, unsigned int y);
-        void drawTriangle(int x0, int y0, int x1, int y1, int x2, int y2, FloatColor color);
 
 
 };

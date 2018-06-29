@@ -14,7 +14,7 @@ unsigned int num_nonzero_pixels(Targa& t)
    {
        for(int y =0; y < t.getHeight(); y++)
        {
-           TargaColor color = t.getPixel(x,y);
+           TargaColor color = t.getPixel(glm::ivec2(x,y));
            if(color.r >0 || color.g > 0 || color.b > 0)
            {
                acc++;
@@ -35,15 +35,15 @@ TEST_CASE("TARGA", "[targa io]")
         REQUIRE(t.getHeight() == height);
  
         //Out of bounds
-        REQUIRE_NOTHROW( t.setPixel(1024, 1024, Targa::white));
-        REQUIRE_NOTHROW( t.setPixel(-1, -1, Targa::white));
+        REQUIRE_NOTHROW( t.setPixel(glm::ivec2(1024, 1024), Targa::white));
+        REQUIRE_NOTHROW( t.setPixel(glm::ivec2(-1, -1), Targa::white));
 
-        REQUIRE_THROWS( t.getPixel(-1,-1));
-        REQUIRE_THROWS( t.getPixel(1024,1024));
+        REQUIRE_THROWS( t.getPixel(glm::ivec2(-1,-1)));
+        REQUIRE_THROWS( t.getPixel(glm::ivec2(1024,1024)));
 
         //Writing
-        t.setPixel(0,0, Targa::red);
-        TargaColor color = t.getPixel(0,0); 
+        t.setPixel(glm::ivec2(0,0), Targa::red);
+        TargaColor color = t.getPixel(glm::ivec2(0,0)); 
         REQUIRE (color.r == 255);
         REQUIRE (color.g == 0); 
         REQUIRE (color.b == 0);
@@ -53,9 +53,9 @@ TEST_CASE("TARGA", "[targa io]")
     {
         Targa writeTest(100, 100);
         writeTest.clear(Targa::white);
-        writeTest.drawLine(0,0, 100, 100, Targa::white);
-        writeTest.drawLine(0,100, 20, 80, Targa::white);
-        writeTest.drawLine(50,0, 50, 100, Targa::white);
+        writeTest.drawLine(glm::ivec2(0,0), glm::ivec2(100, 100), Targa::white);
+        writeTest.drawLine(glm::ivec2(0,100), glm::ivec2(20, 80), Targa::white);
+        writeTest.drawLine(glm::ivec2(50,0), glm::ivec2(50, 100), Targa::white);
         std::fstream fileOut;
         fileOut.open("targa_test.tga");
         REQUIRE( fileOut.is_open());
@@ -81,81 +81,81 @@ TEST_CASE("TARGA", "[targa io]")
         SECTION ("point order is irrelevant")
         {
             //Big diagonal line
-            lineTest.drawLine(0,0,99,99, Targa::white);
+            lineTest.drawLine(glm::ivec2(0,0),glm::ivec2(99,99), Targa::white);
             REQUIRE(num_nonzero_pixels(lineTest) == 100);
             //Drawing backwards still fills same pixels
-            lineTest.drawLine(99,99, 0, 0, Targa::white);
+            lineTest.drawLine(glm::ivec2(99,99), glm::ivec2(0, 0), Targa::white);
             REQUIRE(num_nonzero_pixels(lineTest) == 100);
         }
 
         SECTION ("Line may extend beyond bounds")
         {
-            lineTest.drawLine(-1,-1, 10,10, Targa::white);
+            lineTest.drawLine(glm::ivec2(-1,-1), glm::ivec2(10,10), Targa::white);
             REQUIRE(num_nonzero_pixels(lineTest) == 11);
         }
 
         SECTION ("Horizontal lines can be drawn")
         {
-            lineTest.drawLine(0, 50, 99, 50, Targa::white);
+            lineTest.drawLine(glm::ivec2(0, 50), glm::ivec2(99, 50), Targa::white);
             REQUIRE(num_nonzero_pixels(lineTest) == 100);
         }
 
         SECTION ("Vertical lines can be drawn")
         {
-            lineTest.drawLine(50, 0, 50, 99, Targa::white);
+            lineTest.drawLine(glm::ivec2(50, 0), glm::ivec2(50, 99), Targa::white);
             REQUIRE(num_nonzero_pixels(lineTest) == 100);
         }
 
         SECTION("Shallow ascent drawn correctly")
         {
-            lineTest.drawLine(0,0, 99, 20, Targa::white);
+            lineTest.drawLine(glm::ivec2(0,0), glm::ivec2(99, 20), Targa::white);
             REQUIRE(num_nonzero_pixels(lineTest) == 100);
         }
 
         SECTION("Steep ascent drawn correctly")
         {
-            lineTest.drawLine(0,0, 20, 99, Targa::white);
+            lineTest.drawLine(glm::ivec2(0,0), glm::ivec2(20, 99), Targa::white);
             REQUIRE(num_nonzero_pixels(lineTest) == 100);
         }
 
         SECTION("Shallow descent drawn correctly")
         {
-            lineTest.drawLine(0,99, 99, 80, Targa::white);
+            lineTest.drawLine(glm::ivec2(0,99), glm::ivec2(99, 80), Targa::white);
             REQUIRE(num_nonzero_pixels(lineTest) == 100);
         }
 
         SECTION("Steep descent drawn correctly")
         {
-            lineTest.drawLine(0,99, 20, 0, Targa::white);
+            lineTest.drawLine(glm::ivec2(0,99), glm::ivec2(20, 0), Targa::white);
             REQUIRE(num_nonzero_pixels(lineTest) == 100);
         }
 
         SECTION("Shallow backwards ascent drawn correctly")
         {
-            lineTest.drawLine(99, 20, 0, 0, Targa::white);
+            lineTest.drawLine(glm::ivec2(99, 20), glm::ivec2(0, 0), Targa::white);
             REQUIRE(num_nonzero_pixels(lineTest) == 100);
         }
 
         SECTION("Steep backwards ascent drawn correctly")
         {
-            lineTest.drawLine(20, 99, 0, 0, Targa::white);
+            lineTest.drawLine(glm::ivec2(20, 99), glm::ivec2(0, 0), Targa::white);
             REQUIRE(num_nonzero_pixels(lineTest) == 100);
         }
 
         SECTION("Shallow backawards descent drawn correctly")
         {
-            lineTest.drawLine(99, 80, 0, 99, Targa::white);
+            lineTest.drawLine(glm::ivec2(99, 80), glm::ivec2(0, 99), Targa::white);
             REQUIRE(num_nonzero_pixels(lineTest) == 100);
         }
 
         SECTION("Steep descent drawn correctly")
         {
-            lineTest.drawLine(20, 0, 0, 99, Targa::white);
+            lineTest.drawLine(glm::ivec2(20, 0), glm::ivec2(0, 99), Targa::white);
             REQUIRE(num_nonzero_pixels(lineTest) == 100);
         }
         SECTION("Line from (x,y) to (x,y) -- aka same location")
         {
-            lineTest.drawLine(50,50,50,50, Targa::red);
+            lineTest.drawLine(glm::ivec2(50,50),glm::ivec2(50,50), Targa::red);
             REQUIRE(num_nonzero_pixels(lineTest) == 1);
             
         }
@@ -165,19 +165,22 @@ TEST_CASE("TARGA", "[targa io]")
     {
         
         Targa triangleTest(100,100);
+        glm::ivec2 A(0,0);
+        glm::ivec2 B(50,50);
+        glm::ivec2 C(99,20);
         //Forwards
-        triangleTest.drawTriangle(0,0, 50,50, 99,20, Targa::red);
+        triangleTest.drawTriangle(A, B, C, Targa::red);
 
         CHECK( num_nonzero_pixels(triangleTest) == 2002);
         //Order of points has no effect
-        triangleTest.drawTriangle(50,50, 0,0, 99,20, Targa::red);
+        triangleTest.drawTriangle(B, A, C, Targa::red);
         CHECK(num_nonzero_pixels(triangleTest) == 2002);
         //Order of points has no effect
-        triangleTest.drawTriangle(99,20,50,50, 0,0, Targa::red);
+        triangleTest.drawTriangle(C, B, A, Targa::red);
         CHECK(num_nonzero_pixels(triangleTest) == 2002);
 
         //Draw triangle extending beyond bounds
-        triangleTest.drawTriangle(-20,-20, 50, 80, 150, 5,Targa::white);
+        triangleTest.drawTriangle(glm::ivec2(-20,-20), glm::ivec2(50, 80), glm::ivec2(150, 5) ,Targa::white);
 
         std::ofstream triangleOut;
         triangleOut.open("triangle.tga");
@@ -238,6 +241,7 @@ TEST_CASE("OBJ Loading", "[obj io vertex]")
     SECTION(" Draw obj file wireframe") 
     {
         Targa t(1000,1000);
+        t.clear(Targa::green);
         Model m;
         m.LoadAll("../obj/african_head.obj");
 
@@ -250,11 +254,9 @@ TEST_CASE("OBJ Loading", "[obj io vertex]")
             verts[2] = m.vertexAt(tri.c.posIndex);
             for(int n =0; n <3; n++)
             {
-                int x0 = (verts[(n+0)%3].x + 1.0f)* (t.getWidth() /2.0f);
-                int x1 = (verts[(n+1)%3].x + 1.0f)* (t.getWidth() /2.0f);
-                int y0 = (verts[(n+0)%3].y + 1.0f)* (t.getHeight() /2.0f);
-                int y1 = (verts[(n+1)%3].y + 1.0f)* (t.getHeight() /2.0f);
-                t.drawLine(x0,y0,x1,y1, Targa::red);
+                PixelCoord p0 = t.fromClip(verts[(n+0)%3]);
+                PixelCoord p1 = t.fromClip(verts[(n+1)%3]);
+                t.drawLine(p0,p1, Targa::red);
             }
             
         }
@@ -278,17 +280,11 @@ TEST_CASE("OBJ Loading", "[obj io vertex]")
             verts[0] = m.vertexAt(tri.a.posIndex);
             verts[1] = m.vertexAt(tri.b.posIndex);
             verts[2] = m.vertexAt(tri.c.posIndex);
-            //for(int n =0; n <3; n++)
-            //{
-            int x0 = (verts[0].x + 1.0f)* (t.getWidth() /2.0f);
-            int x1 = (verts[1].x + 1.0f)* (t.getWidth() /2.0f);
-            int x2 = (verts[2].x + 1.0f)* (t.getWidth() /2.0f);
+            PixelCoord p0 = t.fromClip(verts[0]);
+            PixelCoord p1 = t.fromClip(verts[1]);
+            PixelCoord p2 = t.fromClip(verts[2]);
 
-            int y0 = (verts[0].y + 1.0f)* (t.getHeight() /2.0f);
-            int y1 = (verts[1].y + 1.0f)* (t.getHeight() /2.0f);
-            int y2 = (verts[2].y + 1.0f)* (t.getHeight() /2.0f);
-
-            t.drawTriangle(x0,y0, x1,y1, x2,y2, i %2 == 0 ? Targa::white : Targa::red);
+            t.drawTriangle(p0,p1,p2, i %2 == 0 ? Targa::white : Targa::red);
             //}
             
         }
