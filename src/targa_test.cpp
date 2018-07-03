@@ -181,6 +181,7 @@ TEST_CASE("TARGA", "[targa io]")
 
         //Draw triangle extending beyond bounds
         triangleTest.drawTriangle(glm::ivec2(-20,-20), glm::ivec2(50, 80), glm::ivec2(150, 5) ,Targa::white);
+        triangleTest.drawTriangle(glm::ivec2(10,10), glm::ivec2(10, 80), glm::ivec2(80,10), Targa::red);
 
         std::ofstream triangleOut;
         triangleOut.open("triangle.tga");

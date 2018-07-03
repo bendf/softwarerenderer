@@ -2,7 +2,8 @@
 #include <cmath>
 #include <exception>
 #include <sstream>
-#include<cstdlib>
+#include <cstdlib>
+#include <algorithm>
 
 TargaColor toTargaColor(FloatColor fc)
 {
@@ -89,63 +90,77 @@ FloatColor randomColor()
     return glm::vec3(r,g,b);
 }
 
-void Targa::drawTriangle(PixelCoord p0, PixelCoord p1, PixelCoord p2, FloatColor c)
+glm::vec3 toBarycentric(glm::vec2 p, glm::vec2 A, glm::vec2 B, glm::vec2 C)
+{
+    glm::vec3 barycentric;
+    float det = (B.y - C.y)*(A.x - C.x) + (C.x - B.x)*(A.y - C.y);
+    barycentric.x = ((B.y - C.y)*(p.x - C.x) + (C.x - B.x)*(p.y - C.y))/det; 
+    barycentric.y = ((C.y - A.y)*(p.x - C.x) + (A.x - C.x)*(p.y - C.y))/det; 
+    barycentric.z = 1 - (barycentric.x + barycentric.y);
+    return barycentric;
+     
+}
+bool isInTriangle(glm::vec2 p, glm::vec2 A, glm::vec2 B, glm::vec2 C)
+{
+     
+    glm::vec3 bary = toBarycentric(p, A, B, C);
+    return bary.x >= 0 && bary.y >=0 && bary.z >= 0;
+    return true;
+}
+
+void Targa::drawTriangle(PixelCoord p0, PixelCoord p1, PixelCoord p2, FloatColor color)
 {
 
-    if(p1.y > p2.y)
-    {
-        std::swap(p0,p1);
-    }
-    if(p2.y > p0.y)
-    {
-        std::swap(p0,p2);
-    }
-    if(p2.y > p1.y)
-    {
-        std::swap(p1,p2);
-    }
+    glm::ivec2 topRight = glm::ivec2(std::max({p0.x,p1.x,p2.x}),std::max({p0.y,p1.y,p2.y}));
+    glm::ivec2 botLeft = glm::ivec2(std::min({p0.x,p1.x,p2.x}),std::min({p0.y,p1.y,p2.y}));
 
-    FloatColor col = randomColor();
-    //avoid division by zero
-    if(p0.y == p1.y)
+    for(int x = botLeft.x; x<=topRight.x;x++)
     {
-        drawLine(p0, p1,Targa::green);
-    } 
-    else 
-    {
-        for(int y = p0.y; y >=p1.y; y--)
+        for(int y = botLeft.y; y <=topRight.y; y++)
         {
-
-            float gradStart = float(p1.x - p0.x) / float(p1.y - p0.y);
-            int xStart = p0.x + gradStart * (y - p0.y);
-            float gradEnd = float(p2.x - p0.x) / float(p2.y - p0.y);
-            int xEnd = p0.x +  gradEnd * (y - p0.y);
-            drawLine(glm::ivec2(xStart,y), glm::ivec2(xEnd,y), col);
+            glm::ivec2 p(x,y);
+            if(isInTriangle(p,p0,p1,p2))
+            {
+                setPixel(p,color);
+            }
         }
     }
-
-    //Avoid division by zero
-    if(p1.y == p2.y)
-    {
-        drawLine(p1, p2, Targa::green);
-    }
-    else 
-    {
-
-        for(int y = p2.y; y <=p1.y; y++)
-        {
-            float gradStart = float(p1.x - p2.x) / float(p1.y - p2.y);
-            int xStart = p2.x + gradStart * (y - p2.y);
-            float gradEnd = float(p0.x - p2.x) / float(p0.y - p2.y);
-            int xEnd = p2.x +  gradEnd * (y - p2.y);
-            drawLine(glm::ivec2(xStart,y), glm::ivec2(xEnd, y),col );
-        }
-    } 
-
     
+}
+
+bool isSteep(glm::ivec2 v)
+{
+    return std::abs(v.y) > std::abs(v.x);
 }
 void Targa::drawLine(PixelCoord p0, PixelCoord p1, FloatColor c) 
 {
+    bool transpose = false;
+    if(isSteep(p1-p0))
+    {
+        std::swap(p0.x,p0.y);
+        std::swap(p1.x,p1.y);
+        transpose = true;
+    }
+
+    if(p1.x < p0.x)
+    {
+        std::swap(p0,p1);
+    }
+
+    float grad = p1.x == p0.x ? 0.0f :float(p1.y - p0.y)/float(p1.x - p0.x);
+    for(int x=p0.x; x <= p1.x; x++)
+    {
+        glm::ivec2 p(x,p0.y + grad*(x-p0.x));
+        if(transpose)
+        {
+            std::swap(p.x,p.y);
+        }
+        setPixel(p,c);
+
+    }
+     
+}
+/*
     bool transpose = false;
     if(p0 == p1)
     {
@@ -156,7 +171,7 @@ void Targa::drawLine(PixelCoord p0, PixelCoord p1, FloatColor c)
     float grad = float(p1.y - p0.y) / float(p1.x - p0.x);   
 
     //Check for division by zero
-    if(p1.x == p0.x || std::abs(grad) > 1.0f)
+    if(p1.x == p0.x || std::abs(grad) > .0f)
     {
         std::swap(p0.x, p0.y);
         std::swap(p1.x, p1.y);
@@ -183,6 +198,7 @@ void Targa::drawLine(PixelCoord p0, PixelCoord p1, FloatColor c)
     }
 
 }
+*/
 
 PixelCoord Targa::fromClip(ClipCoord cc)
 {
