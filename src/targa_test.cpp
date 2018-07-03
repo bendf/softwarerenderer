@@ -14,7 +14,7 @@ unsigned int num_nonzero_pixels(Targa& t)
    {
        for(int y =0; y < t.getHeight(); y++)
        {
-           TargaColor color = t.getPixel(glm::ivec2(x,y));
+           TargaFormat color = t.getPixel(glm::ivec2(x,y));
            if(color.r >0 || color.g > 0 || color.b > 0)
            {
                acc++;
@@ -43,7 +43,7 @@ TEST_CASE("TARGA", "[targa io]")
 
         //Writing
         t.setPixel(glm::ivec2(0,0), Targa::red);
-        TargaColor color = t.getPixel(glm::ivec2(0,0)); 
+        TargaFormat color = t.getPixel(glm::ivec2(0,0)); 
         REQUIRE (color.r == 255);
         REQUIRE (color.g == 0); 
         REQUIRE (color.b == 0);
@@ -281,11 +281,17 @@ TEST_CASE("OBJ Loading", "[obj io vertex]")
             verts[0] = m.vertexAt(tri.a.posIndex);
             verts[1] = m.vertexAt(tri.b.posIndex);
             verts[2] = m.vertexAt(tri.c.posIndex);
-            PixelCoord p0 = t.fromClip(verts[0]);
-            PixelCoord p1 = t.fromClip(verts[1]);
-            PixelCoord p2 = t.fromClip(verts[2]);
+            glm::vec3 faceNormal = glm::cross(verts[1] - verts[0], verts[2] - verts[0]);
+            if(faceNormal.z > 0)
+            {
+                PixelCoord p0 = t.fromClip(verts[0]);
+                PixelCoord p1 = t.fromClip(verts[1]);
+                PixelCoord p2 = t.fromClip(verts[2]);
 
-            t.drawTriangle(p0,p1,p2, i %2 == 0 ? Targa::white : Targa::red);
+                glm::vec3 lightDir(0,0,1);
+                float intensity = glm::dot(lightDir,glm::normalize(faceNormal));
+                t.drawTriangle(p0,p1,p2, glm::vec3(1.0f,1.0f,1.0f)*intensity);
+            }
             //}
             
         }

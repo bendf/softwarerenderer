@@ -1,10 +1,17 @@
 #include <cstdint>
 #include <ostream>
 #include <glm/glm.hpp>
+#include "buffer2d.hpp"
 
 typedef glm::vec3 FloatColor;
 typedef glm::ivec2 PixelCoord;
 typedef glm::vec3 ClipCoord;
+
+struct TargaFormat
+{
+    uint8_t b,g,r;
+};
+
 
 struct TargaHeader
 {
@@ -30,18 +37,13 @@ struct TargaHeader
     uint8_t image_descriptor;
 };
 
-struct TargaColor
-{
-    uint8_t b;
-    uint8_t g;
-    uint8_t r;
-};
-TargaColor toTargaColor(FloatColor fc);
+
+TargaFormat toTargaFormat(FloatColor fc);
 
 class Targa 
 {
     private:
-        TargaColor* data;
+        TargaFormat* data;
         uint16_t width;
         uint16_t height;
         TargaHeader generateHeader();
@@ -54,7 +56,7 @@ class Targa
         PixelCoord fromClip(ClipCoord cc);
         uint16_t getWidth();
         uint16_t getHeight();
-        TargaColor getPixel(PixelCoord p);
+        TargaFormat getPixel(PixelCoord p);
         Targa(uint16_t width, uint16_t height);
         ~Targa();
         bool isInBounds(PixelCoord);

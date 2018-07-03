@@ -5,9 +5,9 @@
 #include <cstdlib>
 #include <algorithm>
 
-TargaColor toTargaColor(FloatColor fc)
+TargaFormat toTargaFormat(FloatColor fc)
 {
-    TargaColor tc;
+    TargaFormat tc;
     tc.b = (uint8_t)(fc.b * 255);
     tc.g = (uint8_t)(fc.g * 255);
     tc.r = (uint8_t)(fc.r * 255);
@@ -35,11 +35,11 @@ void Targa::write(std::ostream& stream)
 {
     struct TargaHeader header = generateHeader();
     stream.write(reinterpret_cast<char const*>(&header), sizeof(header));
-    stream.write(reinterpret_cast<char const*>(data), width * height * sizeof(TargaColor));
+    stream.write(reinterpret_cast<char const*>(data), width * height * sizeof(TargaFormat));
 }
 
 
-TargaColor Targa::getPixel(PixelCoord p) 
+TargaFormat Targa::getPixel(PixelCoord p) 
 {
     if(!isInBounds(p))
     {
@@ -60,7 +60,7 @@ void Targa::setPixel(PixelCoord p, FloatColor color)
     {
         unsigned int loc = (width * p.y) + p.x;
         //Yep, BGR component order. Because RGB would be too simple
-        data[loc] = toTargaColor(color);
+        data[loc] = toTargaFormat(color);
     }
 }
 
@@ -210,7 +210,7 @@ PixelCoord Targa::fromClip(ClipCoord cc)
 
 Targa::Targa(uint16_t width, uint16_t height) 
 {
-   data = new TargaColor[width*height];
+   data = new TargaFormat[width*height];
    this->width = width;
    this->height = height;
 }

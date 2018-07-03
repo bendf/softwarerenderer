@@ -3,4 +3,4 @@ project(software_renderer)
 
 set(CMAKE_BUILD_TYPE Debug)
 include_directories(src/include)
-add_executable(targa_test src/test_main.cpp src/targa_test.cpp src/targa.cpp src/model.cpp)
+add_executable(test_run src/test_main.cpp src/buffer2d_test.cpp src/buffer2d.cpp)
