@@ -2,8 +2,7 @@
 #include <catch.hpp>
 #include "buffer2d.hpp"
 
-
-TEST_CASE("Buffer2d", "[buffer2d]")
+TEST_CASE("buffer2d", "[buffer2d]")
 {
     REQUIRE_THROWS(Buffer2D<int>(0,4));
     
