@@ -134,7 +134,4 @@ TEST_CASE("buffer2d/line", "[buffer2d line raster]")
         buffer.drawLine(0,0, 200,200, true);
         REQUIRE(countBufferValues(buffer,true) == 100);
     }
-
-
-
 }

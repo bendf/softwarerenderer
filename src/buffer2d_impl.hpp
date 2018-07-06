@@ -55,6 +55,14 @@ void Buffer2D<T>::clear(T value)
         data[i] = value;
     }
 }
+
+template<typename T>
+int sgn(T val)
+{
+    return (T(0) < val) - (val < T(0));
+}
+
+
 template<typename T>
 void Buffer2D<T>::drawLine(int x0, int y0, int x1, int y1, T value)
 {
@@ -71,22 +79,26 @@ void Buffer2D<T>::drawLine(int x0, int y0, int x1, int y1, T value)
     std::swap(y0,y1);
   }
 
+
   int deltaX = (x1 - x0);
   int deltaY = (y1 - y0);
   for(int x = x0, y = y0, error = 0; x <= x1; x++,error+=2*deltaY)  
   {
-    if(error > deltaX)
+    if(std::abs(error) > deltaX)
     {
-        error -= 2*deltaX;
-        y++;
+        error -= sgn(deltaY)*2*deltaX;
+        y+=sgn(deltaY);
     }
-    if(steep)
+    if(isInBounds(x,y))
     {
-        set(y,x,value);
-    }
-    else 
-    {
-        set(x,y,value);
+        if(steep)
+        {
+            set(y,x,value);
+        }
+        else 
+        {
+            set(x,y,value);
+        }
     }
   }
 }
