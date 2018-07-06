@@ -1,10 +1,13 @@
 #include <cstdlib>
 #include <memory>
+#include <glm/glm.hpp>
 #ifndef BUFFER_2D_H
 #define BUFFER_2D_H
 
 
 void barycentricCoordinates(float x0, float y0, float x1, float y1, float x2, float y2, float x, float y, float& u, float &v, float&w);
+
+glm::vec2 clipToViewport(glm::vec2 p, int width, int height);
 
 template<typename T>
 class Buffer2D
@@ -29,6 +32,7 @@ class Buffer2D
     void clear(T value);
     void drawLine(int x0, int y0, int x1, int y1, T value);
     void drawTriangle(int x0, int y0, int x1, int y1, int x2, int y2, T value);
+    void drawTriangle(int x0, int y0, int x1, int y1, int x2, int y2, T v0, T v1, T v2);
 
 };
 

@@ -16,3 +16,8 @@ void barycentricCoordinates(float x0, float y0,  float x1, float y1, float x2, f
    w = 1.0f - u - v;
 }
 
+
+glm::vec2 clipToViewport(glm::vec2 p, int width, int height)
+{
+    return (p + glm::vec2(1.0f, 1.0f)) * glm::vec2(float(width)/2.0f, float(height)/2.0f);
+}

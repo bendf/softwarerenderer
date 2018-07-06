@@ -1,4 +1,5 @@
 #include <cstdint>
+#include <glm/glm.hpp>
 #include "buffer2d.hpp"
 
 namespace Targa {
@@ -8,7 +9,10 @@ namespace Targa {
         uint8_t b,g,r;
     };
 
+    TargaFormat operator*(const TargaFormat& lhs, const float& rhs);
+    TargaFormat operator+(const TargaFormat& lhs, const TargaFormat& rhs);
     bool operator==(const TargaFormat& lhs, const TargaFormat& rhs);
+    TargaFormat toTargaFormat(glm::vec3 color);
 
     struct TargaHeader
     {

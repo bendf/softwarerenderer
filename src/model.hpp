@@ -26,12 +26,12 @@ class Model
         std::vector<glm::vec3> normals;
         std::vector<glm::vec2> uvs;
         std::vector<Triangle> triangles;
+        void parseLine(std::string line);
     public:
         size_t getNumVertices();
         size_t getNumNormals();
         size_t getNumUVs();
         size_t getNumTriangles();
-        void parseLine(std::string line);
         void LoadAll(const char* filename);
         glm::vec3 vertexAt(int index);
         glm::vec3 normalAt(int index);

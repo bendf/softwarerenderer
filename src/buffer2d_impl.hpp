@@ -103,9 +103,14 @@ void Buffer2D<T>::drawLine(int x0, int y0, int x1, int y1, T value)
   }
 }
 
-
 template<typename T>
 void Buffer2D<T>::drawTriangle(int x0, int y0, int x1, int y1, int x2, int y2, T value)
+{
+   drawTriangle(x0,y0,x1,y1,x2,y2,value,value,value); 
+}
+
+template<typename T>
+void Buffer2D<T>::drawTriangle(int x0, int y0, int x1, int y1, int x2, int y2, T v0, T v1, T v2)
 {
    int x_min = std::min({x0,x1,x2}); 
    int y_min = std::min({y0,y1,y2});
@@ -121,7 +126,7 @@ void Buffer2D<T>::drawTriangle(int x0, int y0, int x1, int y1, int x2, int y2, T
                 barycentricCoordinates(x0,y0, x1,y1, x2,y2, x,y, u,v,w);
                 if((u >= 0) && (v >= 0) && (w >= 0))
                 {
-                    set(x,y,value);
+                    set(x,y,(v0*u) + (v1*v) + (v2*w));
                 }
             }
         }
