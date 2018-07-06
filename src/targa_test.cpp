@@ -42,5 +42,20 @@ TEST_CASE("targa", "[targa io]")
         Targa::write(filename, imageBuffer);
 
     }
+
+    SECTION("Yellow triangles - visual inspection")
+    {
+        Buffer2D<Targa::TargaFormat> tri_buffer(400,400);
+        tri_buffer.clear({0,0,0});
+        const char* filename = "images/yellow_triangles.tga";
+        Targa::TargaFormat yellow = {0, 255,255};
+        tri_buffer.drawTriangle(0,0, 400,400,400,0, yellow);
+        tri_buffer.drawTriangle(0,400, 100,390,50,150, yellow);
+        Targa::write(filename, tri_buffer);
+
+    }
+
 }
+
+
 

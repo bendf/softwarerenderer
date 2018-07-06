@@ -2,6 +2,7 @@
 #include <stdexcept> 
 #include <sstream>
 #include <memory>
+#include <algorithm>
 
 template<typename T>
 Buffer2D<T>::Buffer2D(int width, int height) : width{width}, height{height}
@@ -79,7 +80,6 @@ void Buffer2D<T>::drawLine(int x0, int y0, int x1, int y1, T value)
     std::swap(y0,y1);
   }
 
-
   int deltaX = (x1 - x0);
   int deltaY = (y1 - y0);
   for(int x = x0, y = y0, error = 0; x <= x1; x++,error+=2*deltaY)  
@@ -101,4 +101,30 @@ void Buffer2D<T>::drawLine(int x0, int y0, int x1, int y1, T value)
         }
     }
   }
+}
+
+
+template<typename T>
+void Buffer2D<T>::drawTriangle(int x0, int y0, int x1, int y1, int x2, int y2, T value)
+{
+   int x_min = std::min({x0,x1,x2}); 
+   int y_min = std::min({y0,y1,y2});
+   int x_max = std::max({x0,x1,x2}); 
+   int y_max = std::max({y0,y1,y2}); 
+   for(int x = x_min; x <= x_max; x++)
+   {
+        for(int y = y_min; y <= y_max; y++)
+        {
+            if(isInBounds(x,y))
+            {
+                float u,v,w;
+                barycentricCoordinates(x0,y0, x1,y1, x2,y2, x,y, u,v,w);
+                if((u >= 0) && (v >= 0) && (w >= 0))
+                {
+                    set(x,y,value);
+                }
+            }
+        }
+   }
+
 }

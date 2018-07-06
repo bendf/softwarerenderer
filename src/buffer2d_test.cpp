@@ -135,3 +135,53 @@ TEST_CASE("buffer2d/line", "[buffer2d line raster]")
         REQUIRE(countBufferValues(buffer,true) == 100);
     }
 }
+
+
+TEST_CASE("buffer2d/triangle", "[buffer2d triangle raster]")
+{
+    Buffer2D<bool> buffer(200,200);
+    buffer.clear(false);
+    REQUIRE(countBufferValues(buffer,false) == 200*200);
+
+    SECTION("Half size triangle")
+    {
+        buffer.drawTriangle(0,0,199,199,199,0,true);
+        REQUIRE(countBufferValues(buffer,true) > (199)*(199)/2);
+    }
+
+    SECTION("Centered triangle")
+    {
+        buffer.drawTriangle(50,50,150,150, 175,25, true);
+        REQUIRE(countBufferValues(buffer,true) > 7000);
+    }
+
+    SECTION("1 Pixel triangle")
+    {
+        buffer.drawTriangle(100,100,100,100,100,100,true);
+        REQUIRE(countBufferValues(buffer,true) == 0);
+    }
+
+    SECTION("2 Pixel triangle")
+    {
+        buffer.drawTriangle(100,100,101,100,101,100,true);
+        REQUIRE(countBufferValues(buffer,true) == 0);
+    }
+    
+    SECTION("3 Pixel Triangle")
+    {
+        buffer.drawTriangle(100,100,101,100,101,101,true);
+        REQUIRE(countBufferValues(buffer,true) == 3);
+    }
+
+    SECTION("Flat line Triangle")
+    {
+        buffer.drawTriangle(0,100,100,100,199,100, true);
+        REQUIRE(countBufferValues(buffer,true) == 0);
+    }
+
+    SECTION("Out of bounds triangle")
+    {
+        buffer.drawTriangle(-50, -50, 300, 300, 50, -10, true);
+        REQUIRE(countBufferValues(buffer,true) > 7000);
+    }
+}
