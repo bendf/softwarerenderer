@@ -18,32 +18,7 @@ namespace Targa {
         return lhs.r == rhs.r && lhs.g == rhs.g && lhs.b == rhs.b;
     }
 
-    TargaFormat operator+(const TargaFormat& lhs, const TargaFormat& rhs)
-    {
-        TargaFormat result;
-        result.r = lhs.r + rhs.r;
-        result.g = lhs.g + rhs.g;
-        result.b = lhs.b + rhs.b;
-        return result;
-    }
-    TargaFormat operator*(const TargaFormat& lhs, const float& rhs)
-    {
-       TargaFormat result; 
-       result.r = lhs.r * rhs;
-       result.b = lhs.g * rhs;
-       result.g = lhs.b * rhs;
-       return result;
-    }
-
-    TargaFormat toTargaFormat (glm::vec3 color)
-    {
-        TargaFormat t;
-        t.r = color.r*255;
-        t.b = color.b*255;
-        t.g = color.g*255;
-        return t;
-    }
-    void write(const char * filename, Buffer2D<TargaFormat>& buffer)
+    void write(const char * filename, Buffer2D<TargaFormat> & buffer)
     {
         std::ofstream f(filename);
         f.exceptions(std::ofstream::failbit | std::ofstream::badbit);

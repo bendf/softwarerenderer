@@ -7,12 +7,13 @@ namespace Targa {
     struct TargaFormat
     {
         uint8_t b,g,r;
+        operator glm::vec3()
+        {
+            return glm::vec3(float(r)/255.0f, float(b)/255.0f, float(g)/255.0f);
+        }
     };
 
-    TargaFormat operator*(const TargaFormat& lhs, const float& rhs);
-    TargaFormat operator+(const TargaFormat& lhs, const TargaFormat& rhs);
     bool operator==(const TargaFormat& lhs, const TargaFormat& rhs);
-    TargaFormat toTargaFormat(glm::vec3 color);
 
     struct TargaHeader
     {
@@ -39,7 +40,8 @@ namespace Targa {
     };
 
     TargaHeader generateHeader(uint16_t width, uint16_t height);
+
     void write(const char* filename, Buffer2D<TargaFormat>& buffer);
     Buffer2D<TargaFormat> read(const char* filename);
-
 }
+

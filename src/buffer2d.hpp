@@ -1,13 +1,7 @@
-#include <cstdlib>
-#include <memory>
-#include <glm/glm.hpp>
 #ifndef BUFFER_2D_H
 #define BUFFER_2D_H
-
-
-void barycentricCoordinates(float x0, float y0, float x1, float y1, float x2, float y2, float x, float y, float& u, float &v, float&w);
-
-glm::vec2 clipToViewport(glm::vec2 p, int width, int height);
+#include <cstdlib>
+#include <memory>
 
 template<typename T>
 class Buffer2D
@@ -15,6 +9,7 @@ class Buffer2D
     private:
     std::unique_ptr<T[]> data;
     int width, height;
+
     public:
     Buffer2D(int width, int height);
 
@@ -23,17 +18,13 @@ class Buffer2D
 
     int getWidth() { return width; }
     int getHeight() { return height; }
-    size_t getByteSize();
+    size_t getByteSize() { return width * height * sizeof(T);}
     T* rawData() { return data.get(); }
 
     T get(int x, int y);
     void set(int x, int y, T value);
 
     void clear(T value);
-    void drawLine(int x0, int y0, int x1, int y1, T value);
-    void drawTriangle(int x0, int y0, int x1, int y1, int x2, int y2, T value);
-    void drawTriangle(int x0, int y0, int x1, int y1, int x2, int y2, T v0, T v1, T v2);
-
 };
 
 #include "buffer2d_impl.hpp"
