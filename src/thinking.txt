@@ -1,0 +1,48 @@
+
+
+Designaro
+
+- Data
+- Buffer2D<T> - stores data of type T in a buffer. makes sense
+  Can represent color buffer as Buffer2D<glm::vec3> and depth buffer as Buffer2D<float>
+
+- AttributeBundle - an ordered set, so tuple, of values bundling together several attributes for a vertex, e.g Position,Color, normal, uvCoords etc.
+- Really attribBundle should be a template parameter restricted to being a tuple of values of perhaps many types
+
+Position obviously required...
+tuple<Position,Normal Uv)
+tuple<Position,UV)
+
+Do compile time checks to make sure we don't violate this when using attribBundles
+
+- Simply wrapped newtypes???
+Like Color as glm::vec3 but distinct to compiler ? Looks like I'd need to write a template class which exposes the interface of my ambigiuous class, ie
+
+template SpecialVec3<Template T>
+{
+    operator+ ()   { //forward to vec3 +}
+    operator- () { //forward to vec3 - }
+    ...
+    etc
+
+}
+
+
+Functions::
+
+- Space conversion (linear algebra)
+- Set/get buffer values
+- write buffer to file
+
+
+- Generators ::
+- Line :: vec2 p0 -> vec2 p1 -> [vec3 p, vec2 lambda]
+- Triangle :: vec2 p0 -> vec2 p1 -> vec2 p3 -> [vec3 p, vec3 lambda]
+
+Vertex Shader :: T : AttribBundle -> U : AttribBundle # Both must be attribBundles, but not neccessarily the same, for instance we might add color to each vertex from lights or some shit
+Fragment Shader :: AttribBundle -> changes color Buffer, changes depth buffer (void)
+
+
+Take bundles of 3 verts, give them to vertex shader, get back transformed verts as triangle of attributes. Perform generation on them.
+
+  -- How to work out handedness?

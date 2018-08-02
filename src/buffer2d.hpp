@@ -23,7 +23,6 @@ class Buffer2D
 
     T get(int x, int y);
     void set(int x, int y, T value);
-
     void clear(T value);
 };
 
