@@ -18,6 +18,17 @@ namespace Targa {
         return lhs.r == rhs.r && lhs.g == rhs.g && lhs.b == rhs.b;
     }
 
+    TargaFormat fromVec3(glm::vec3 color)
+    {
+		   Targa::TargaFormat t = {
+ 			static_cast<uint8_t>(color.b * 255),
+ 			static_cast<uint8_t>(color.g * 255),
+			static_cast<uint8_t>(color.r *255)
+           };
+        return t;
+    }
+
+
     void write(const char * filename, Buffer2D<TargaFormat> & buffer)
     {
         std::ofstream f(filename);

@@ -13,6 +13,8 @@ namespace Targa {
         }
     };
 
+    TargaFormat fromVec3(glm::vec3 color);
+
     bool operator==(const TargaFormat& lhs, const TargaFormat& rhs);
 
     struct TargaHeader

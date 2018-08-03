@@ -1,5 +1,4 @@
 #include "buffer2d.hpp"
-#include "util.hpp"
 
 glm::vec3 barycentricCoordinates(glm::vec3 p0, glm::vec3 p1, glm::vec3 p2, glm::vec3 p)
 {
@@ -24,8 +23,7 @@ glm::vec3 clipToViewport(glm::vec3 p, int width, int height)
 }
 
 template<typename T>
-unsigned int countBufferValues(Buffer2D<T>& buffer, T value)
-{
+unsigned int countBufferValues(Buffer2D<T>& buffer, T value) {
     unsigned int acc = 0;
     for(int x = 0; x < buffer.getWidth(); x++)
     {

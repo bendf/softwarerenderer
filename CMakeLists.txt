@@ -9,7 +9,9 @@ add_executable(model_test src/test_main.cpp src/model.cpp src/model_test.cpp)
 add_executable(render_test src/test_main.cpp src/render.cpp src/render_test.cpp)
 add_executable(raster_test src/test_main.cpp src/raster.cpp src/raster_test.cpp src/targa.cpp)
 #add_executable(test_run src/test_main.cpp src/buffer2d_test.cpp src/buffer2d.cpp src/targa.cpp src/targa_test.cpp src/model.cpp src/model_test.cpp src/render.cpp )
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
+set(CMAKE_CXX_STANDARD 17)
 
 IF( EXISTS "${CMAKE_CURRENT_BINARY_DIR}/compile_commands.json" )
   EXECUTE_PROCESS( COMMAND ${CMAKE_COMMAND} -E copy_if_different
