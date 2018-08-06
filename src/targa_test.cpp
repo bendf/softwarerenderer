@@ -9,17 +9,21 @@ TEST_CASE("targa", "[targa io]")
 
     SECTION("Clear Red targa")
     {
-        const char* filename = "images/targa_clear_red.tga";
-        Targa::TargaFormat red = {0,0,255};
+        Targa::TargaFormat red(0,0,255);
         imageBuffer.clear(red);
-        REQUIRE_NOTHROW(Targa::write(filename, imageBuffer));
 
-        std::ifstream f(filename);
+        std::fstream f;
+        //f.exceptions(std::ofstream::failbit | std::ofstream::badbit);
+        f.open("images/targa_clear_red.tga");
+
         REQUIRE(f.good());
+        REQUIRE_NOTHROW(f <<=imageBuffer);
+        f.seekg(0);
+        f.seekp(0);
 
-        Buffer2D<Targa::TargaFormat> fromFile = Targa::read(filename);
-        REQUIRE(fromFile.getWidth() == 100);
-        REQUIRE(fromFile.getHeight() == 100);
+        Buffer2D<Targa::TargaFormat> fromFile = Targa::read(f);
+        REQUIRE(fromFile.width() == 100);
+        REQUIRE(fromFile.height() == 100);
         
         Targa::TargaFormat expected = {0,0,255};
         Targa::TargaFormat found = fromFile.get(0,0);

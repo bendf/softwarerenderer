@@ -10,8 +10,7 @@ Designaro
 - Really attribBundle should be a template parameter restricted to being a tuple of values of perhaps many types
 
 Position obviously required...
-tuple<Position,Normal Uv)
-tuple<Position,UV)
+tuple<Position,Normal Uv) tuple<Position,UV)
 
 Do compile time checks to make sure we don't violate this when using attribBundles
 
@@ -46,3 +45,11 @@ Fragment Shader :: AttribBundle -> changes color Buffer, changes depth buffer (v
 Take bundles of 3 verts, give them to vertex shader, get back transformed verts as triangle of attributes. Perform generation on them.
 
   -- How to work out handedness?
+
+
+
+
+// raster representation
+
+//Vertex :: (position, [attribute]) -> 
+//Line : 2 points (x,y) + m attributes -> n points (x,y) + m attributes 

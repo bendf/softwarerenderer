@@ -7,15 +7,11 @@ namespace Targa {
     struct TargaFormat
     {
         uint8_t b,g,r;
-        operator glm::vec3()
-        {
-            return glm::vec3(float(r)/255.0f, float(b)/255.0f, float(g)/255.0f);
-        }
+        TargaFormat() : TargaFormat(0,0,0) {}
+        TargaFormat(uint8_t r, uint8_t g, uint8_t b) : b(b), g(g), r(r) {}
+        TargaFormat(glm::vec3 color);
+        operator glm::vec3();
     };
-
-    TargaFormat fromVec3(glm::vec3 color);
-
-    bool operator==(const TargaFormat& lhs, const TargaFormat& rhs);
 
     struct TargaHeader
     {
@@ -39,11 +35,16 @@ namespace Targa {
         uint8_t bit_depth;
         //1 bytes -- descriptor , alpha channel depth and direction?? wtf stick with 0
         uint8_t image_descriptor;
+        TargaHeader() : TargaHeader(0,0) {}
+        TargaHeader(uint16_t width, uint16_t height);
+
     };
 
-    TargaHeader generateHeader(uint16_t width, uint16_t height);
+    std::ostream& operator<<=(std::ostream& stream, const TargaHeader& header);
+    std::ostream& operator<<=(std::ostream& stream, const Buffer2D<TargaFormat>& buffer);
+    std::istream& operator>>=(std::istream& stream, TargaHeader& header);
 
-    void write(const char* filename, Buffer2D<TargaFormat>& buffer);
-    Buffer2D<TargaFormat> read(const char* filename);
+    Buffer2D<TargaFormat> read(std::istream& f);
+
 }
 

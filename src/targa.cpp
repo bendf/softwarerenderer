@@ -4,49 +4,57 @@
 
 namespace Targa {
 
-    struct TargaHeader generateHeader(uint16_t width, uint16_t height)
+    TargaFormat::TargaFormat(glm::vec3 color)
     {
-        struct TargaHeader header = 
-        {
-            0, 0, 2, {0, 0, 0, 0, 0}, 0, 0, width, height, 24, 0
-        };
-        return header;
+       r = static_cast<uint8_t>(color.r * 255);
+       g = static_cast<uint8_t>(color.g * 255);
+       b = static_cast<uint8_t>(color.b * 255);
     }
 
-    bool operator==(const TargaFormat& lhs, const TargaFormat& rhs)
+    TargaFormat::operator glm::vec3()
     {
-        return lhs.r == rhs.r && lhs.g == rhs.g && lhs.b == rhs.b;
+        return glm::vec3(float(r)/255.0f, float(b)/255.0f, float(g)/255.0f);
     }
 
-    TargaFormat fromVec3(glm::vec3 color)
+    TargaHeader::TargaHeader(uint16_t width, uint16_t height)
+        : id_length(0),
+          color_map_type(0),
+          image_type(2),
+          color_map_spec{0,0,0,0,0},
+          ll_x(0),
+          ll_y(0),
+          width(width),
+          height(height),
+          bit_depth(24),
+          image_descriptor(0)
     {
-		   Targa::TargaFormat t = {
- 			static_cast<uint8_t>(color.b * 255),
- 			static_cast<uint8_t>(color.g * 255),
-			static_cast<uint8_t>(color.r *255)
-           };
-        return t;
     }
 
-
-    void write(const char * filename, Buffer2D<TargaFormat> & buffer)
+    std::ostream& operator<<=(std::ostream& stream, const TargaHeader& header)
     {
-        std::ofstream f(filename);
-        f.exceptions(std::ofstream::failbit | std::ofstream::badbit);
-        struct TargaHeader header = generateHeader(buffer.getWidth(), buffer.getHeight());
-        f.write(reinterpret_cast<char const*>(&header), sizeof(header));
-        f.write(reinterpret_cast<char const*>(buffer.rawData()), buffer.getByteSize());
-
+        return stream.write(reinterpret_cast<char const*>(&header), sizeof(header));
     }
-    Buffer2D<TargaFormat> read(const char * filename) 
+
+    std::ostream& operator<<=(std::ostream& stream, const Buffer2D<TargaFormat>& buffer) 
     {
-        std::ifstream f(filename);
-        f.exceptions(std::ofstream::failbit | std::ofstream::badbit);
+       TargaHeader header(buffer.width(), buffer.height());
+       return stream <<= header;//.write(reinterpret_cast<char const*>(buffer.rawPtr()), buffer.byteSize()); 
+    }
+
+    std::istream& operator>>=(std::istream& stream, TargaHeader& header)
+    {
+       return stream.read(reinterpret_cast<char*>(&header), sizeof(header)); 
+    }
+
+    
+    Buffer2D<TargaFormat> read(std::istream& f) 
+    {
         struct TargaHeader header;
-        f.read(reinterpret_cast<char*>(&header), sizeof(header)); 
+        f >>= header;
         Buffer2D<TargaFormat> buffer(header.width, header.height);
-        f.read(reinterpret_cast<char*>(buffer.rawData()), buffer.getByteSize());
+        f.read(reinterpret_cast<char*>(buffer.rawPtr()), buffer.byteSize());
         return buffer;
     }
+    
 }
 
