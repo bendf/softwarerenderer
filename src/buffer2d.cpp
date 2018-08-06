@@ -1,3 +1,3 @@
-#include "buffer2d.hpp"
+#include "buffer2d_impl.hpp"
 
 

@@ -1,6 +1,6 @@
 #include <cstdint>
 #include <glm/glm.hpp>
-#include "buffer2d.hpp"
+#include "buffer2d_impl.hpp"
 
 namespace Targa {
 
@@ -40,6 +40,7 @@ namespace Targa {
 
     };
 
+    //Binary stream operators - cast to char arrays before writing
     std::ostream& operator<<=(std::ostream& stream, const TargaHeader& header);
     std::ostream& operator<<=(std::ostream& stream, const Buffer2D<TargaFormat>& buffer);
     std::istream& operator>>=(std::istream& stream, TargaHeader& header);

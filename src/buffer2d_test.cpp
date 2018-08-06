@@ -1,6 +1,6 @@
 #define CATCH_CONFIG_ENABLE_ALL_STRINGMAKERS
 #include <catch.hpp>
-#include "buffer2d.hpp"
+#include "buffer2d_impl.hpp"
 
 
 TEST_CASE("buffer2d/primitive", "[buffer2d]")
