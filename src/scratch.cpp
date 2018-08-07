@@ -46,39 +46,39 @@ void doThing(const std::string &str)
 {
 	if(str.length() > 0) 
 	{
-    std::stringstream ss(str);
-    std::string type;
-    ss >> type;
-    ss.exceptions(std::ios::failbit); 
+		std::stringstream ss(str);
+		std::string type;
+		ss >> type;
+		ss.exceptions(std::ios::failbit); 
 
-    if(type == "f")
-    {
-		AttribIndex a,b,c;
-		ss >> a.pos_index >> '/' >> a.uv_index >> '/' >> a.norm_index; 
-		ss >> b.pos_index >> '/' >> b.uv_index >> '/' >> b.norm_index; 
-		ss >> c.pos_index >> '/' >> c.uv_index >> '/' >> c.norm_index; 
+		if(type == "f")
+		{
+			AttribIndex a,b,c;
+			ss >> a.pos_index >> '/' >> a.uv_index >> '/' >> a.norm_index; 
+			ss >> b.pos_index >> '/' >> b.uv_index >> '/' >> b.norm_index; 
+			ss >> c.pos_index >> '/' >> c.uv_index >> '/' >> c.norm_index; 
 
-		std::cout <<  "Face: " << a << " , " << b  << " , " << c << "\n";
-	     	
-    }
-    else if(type == "v")
-    {
-        glm::vec3 v;
-        ss >> v;
-        std::cout << "Position: " << v << "\n";
-    }
-    else if(type == "vt")
-    {
-        glm::vec3 v;
-        ss >> v;
-        std::cout << "UV: " <<  v << "\n";
-    }
-    else if(type == "vn")
-    {
-        glm::vec3 v;
-        ss >> v;
-        std::cout << "Normal: " << v << "\n";
-    }
+			std::cout <<  "Face: " << a << " , " << b  << " , " << c << "\n";
+				
+		}
+		else if(type == "v")
+		{
+			glm::vec3 v;
+			ss >> v;
+			std::cout << "Position: " << v << "\n";
+		}
+		else if(type == "vt")
+		{
+			glm::vec3 v;
+			ss >> v;
+			std::cout << "UV: " <<  v << "\n";
+		}
+		else if(type == "vn")
+		{
+			glm::vec3 v;
+			ss >> v;
+			std::cout << "Normal: " << v << "\n";
+		}
 	}
 
 }
@@ -105,10 +105,10 @@ int main()
                       doThing);
     }
 
-
     catch(std::ios_base::failure f)
     {
-        std::cout << "Error, malformed obj file\n";
+        std::cout << "Error, malformed obj file:\n";
+		std::cout << f.what() << "\n";
     }
 
 }

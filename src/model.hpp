@@ -15,7 +15,9 @@ struct AttribIndex
 
 class Model
 {
+    private:
     public:
+    void parseLine(const std::string& str);
     std::vector<glm::vec3> positions;
     std::vector<glm::vec3> normals;
     std::vector<glm::vec3> uvs;
@@ -25,8 +27,8 @@ class Model
 
 };
 
-std::istream operator>>(std::istream& stream, glm::vec3& vec);
-std::istream operator>>(std::istream& stream, AttribIndex& attribIndex);
+std::istream& operator>>(std::istream& stream, glm::vec3& vec);
+std::istream& operator>>(std::istream& stream, AttribIndex& attribIndex);
 
 
 
