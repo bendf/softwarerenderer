@@ -1,4 +1,5 @@
 #include "model.hpp"
+#include <regex>
 
 
 bool AttribIndex::operator==(const AttribIndex& o) const
@@ -7,8 +8,10 @@ bool AttribIndex::operator==(const AttribIndex& o) const
 }
 
 
-Model::Model(std::istream& stream)
+Model::Model(std::istream& stream) : positions{}, normals{}, uvs{}, triangles{}
 {
 
-
+         
+     
+         
 }

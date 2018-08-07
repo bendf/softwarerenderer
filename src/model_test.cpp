@@ -11,11 +11,12 @@ TEST_CASE("Quad Model", "[model, io, simple]")
     std::ifstream quad("../obj/quad.obj");
     
     Model q(quad);
-    REQUIRE(q.positions[0] == glm::vec3(-1.0f, -1.0f, 0.0f));
-    REQUIRE(q.positions[3] == glm::vec3(1.0f,1.0f,0.0f));
-    REQUIRE(q.uvs[0] == glm::vec3(0.0f, 0.0f, 0.0f));
-    REQUIRE(q.uvs[3] == glm::vec3(1.0f,1.0f,0.0f));
-    REQUIRE(q.normals[0] == glm::vec3(0.0f,0.0f, -1.0f));
+    REQUIRE(q.positions.at(0) == glm::vec3(-1.0f, -1.0f, 0.0f));
+    REQUIRE(q.positions.at(3) == glm::vec3(1.0f,1.0f,0.0f));
+    REQUIRE(q.uvs.at(0) == glm::vec3(0.0f, 0.0f, 0.0f));
+    REQUIRE(q.uvs.at(3) == glm::vec3(1.0f,1.0f,0.0f));
+    REQUIRE(q.normals.at(0) == glm::vec3(0.0f,0.0f, -1.0f));
+    
 
     std::tuple<AttribIndex,AttribIndex,AttribIndex>& t0 = q.triangles[0];
     REQUIRE(std::get<0>(t0) == AttribIndex{1,1,1});
