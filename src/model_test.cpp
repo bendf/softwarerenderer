@@ -26,11 +26,13 @@ TEST_CASE("Quad Model", "[model, io, simple]")
 
 TEST_CASE("Model", "[model io]")
 {
-    std::ifstream obj("../obj/african_head.obj");
+    std::ifstream obj("../obj/quad.obj");
     Model head(obj); 
 
-    //for(auto p : Model)
+    for(auto p : head)
     {
-
+       REQUIRE(std::get<0>(p) != std::get<1>(p));      
+       REQUIRE(std::get<1>(p) != std::get<2>(p));      
+       REQUIRE(std::get<2>(p) != std::get<0>(p));      
     }
 }

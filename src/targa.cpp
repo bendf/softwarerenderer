@@ -38,7 +38,7 @@ namespace Targa {
     std::ostream& operator<<=(std::ostream& stream, const Buffer2D<TargaFormat>& buffer) 
     {
        TargaHeader header(buffer.width(), buffer.height());
-       return stream <<= header;//.write(reinterpret_cast<char const*>(buffer.rawPtr()), buffer.byteSize()); 
+       return (stream <<= header).write(reinterpret_cast<char const*>(buffer.rawPtr()), buffer.byteSize()); 
     }
 
     std::istream& operator>>=(std::istream& stream, TargaHeader& header)

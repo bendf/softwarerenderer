@@ -36,7 +36,7 @@ class buffer2d_out_of_range : public std::exception
         msg = ss.str(); 
     }
 
-    char const * what() 
+    virtual char const * what()
     {
         return msg.c_str();
     }

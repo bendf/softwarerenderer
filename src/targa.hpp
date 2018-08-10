@@ -11,6 +11,7 @@ namespace Targa {
         TargaFormat(uint8_t r, uint8_t g, uint8_t b) : b(b), g(g), r(r) {}
         TargaFormat(glm::vec3 color);
         operator glm::vec3();
+        bool operator==(const TargaFormat& o) const { return b == o.b && g == o.g && r == o.r;}
     };
 
     struct TargaHeader

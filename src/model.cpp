@@ -9,6 +9,11 @@ bool AttribIndex::operator==(const AttribIndex& o) const
     return pos == o.pos && uv == o.uv && norm == o.norm;
 }
 
+bool AttribIndex::operator!=(const AttribIndex& o ) const
+{
+    return !(*this == o);
+}
+
 std::istream& operator>>(std::istream& stream, glm::vec3& v)
 {
 	return stream >> v.x >> v.y >> v.z;	
