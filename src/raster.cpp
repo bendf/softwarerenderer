@@ -1,6 +1,6 @@
 #include "raster.hpp"
 #include <algorithm>
-#include <array>
+
 
 glm:: vec3 barycentricCoordinates2D(const glm::vec2 p0, const glm::vec2 p1, const glm::vec2 p2, const glm::vec2 p)
 {
@@ -19,24 +19,4 @@ glm:: vec3 barycentricCoordinates2D(const glm::vec2 p0, const glm::vec2 p1, cons
 }
 
 
-std::vector<glm::vec3> rasterTriangle(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c)
-{
-    std::vector<glm::vec3> tmp;
-    std::array<glm::vec3, 3> verts{a,b,c};
-
-    glm::vec3 minPos = glm::min(glm::min(a,b),c);
-    glm::vec3 maxPos = glm::max(glm::max(a,b),c);
-    for(int x = minPos.x; x < maxPos.x; x++)
-    {
-        for(int y = minPos.y ; y < maxPos.y; y++)
-        {
-            glm::vec3 bc = barycentricCoordinates2D(a, b, c, glm::vec2(x,y)); 
-            if(bc.x >= 0.0f && bc.x < 1.0f  &&  bc.y >= 0.0f && bc.y < 1.0f && bc.z >= 0.0f && bc.y < 1.0f)
-            {
-                tmp.push_back(bc); 
-            }
-        }
-    }
-    return tmp;
-}
 

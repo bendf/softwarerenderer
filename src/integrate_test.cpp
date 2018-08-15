@@ -15,7 +15,6 @@ TEST_CASE("integration/quad", "[quad, model, raster, buffer2d, targa]")
 
     for(auto attrs : quad)
     {
-        
         glm::vec3 p0 = quad.positions.at(std::get<0>(attrs).pos -1);
         p0 += glm::vec3(1.0f);
         p0.x*= 100.0f/2.0f;
@@ -29,9 +28,12 @@ TEST_CASE("integration/quad", "[quad, model, raster, buffer2d, targa]")
         p2.x*= 100.0f/2.0f;
         p2.y*= 100.0f/2.0f;
 
-        for(auto bc : rasterTriangle(p0,p1,p2))
+        PosAttr a{p0};
+        PosAttr b{p1};
+        PosAttr c{p2};
+        for(auto interpolated : rasterTriangle(a,b,c))
         {
-            glm::vec3 pos = (bc.x * p0) + (bc.y * p1) + (bc.z * p2);
+            glm::vec3 pos = interpolated.pos;
 
             int x = std::round(pos.x);
             int y = std::round(pos.y);
@@ -44,12 +46,8 @@ TEST_CASE("integration/quad", "[quad, model, raster, buffer2d, targa]")
         }
 
     }
-
     
     std::ofstream tgaOut("images/quad_model.tga");
     tgaOut <<= buf;
-
-    
-
 
 }

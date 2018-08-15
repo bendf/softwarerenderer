@@ -6,12 +6,12 @@
 TEST_CASE("raster2d/triangle", "[raster, triangle]")
 {
     
-    glm::vec3 a(0.0f);
-    glm::vec3 b(0.0f, 50.0f, 0.0f);
-    glm::vec3 c(50.0f, 0.0f, 0.0f);
+    PosAttr a{glm::vec3(0.0f)};
+    PosAttr b{glm::vec3(0.0f, 50.0f, 0.0f)};
+    PosAttr c{glm::vec3(50.0f, 0.0f, 0.0f)};
 
-    std::vector<glm::vec3> bcs = rasterTriangle(a,b,c);
-    REQUIRE(bcs.size() > 50*24);
+    std::vector<PosAttr> frags = rasterTriangle(a,b,c);
+    REQUIRE(frags.size() > 50*24);
 
 }
 

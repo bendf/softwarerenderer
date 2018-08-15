@@ -19,27 +19,9 @@ class Buffer2D
     T* rawPtr() const { return data.get(); }
 
     T get(int x, int y) const;
-    void set(int x, int y, T value);
+    bool set(int x, int y, T value);
     void clear(T value);
 
-};
-
-class buffer2d_out_of_range : public std::exception 
-{
-    std::string msg;
-    public:
-    buffer2d_out_of_range(int x, int y, int width, int height)  
-    {
-        std::stringstream ss; 
-        ss << "Attempt to access location (" << x << "," << y
-           << ") in buffer of size (" << width << "," << height << ")";
-        msg = ss.str(); 
-    }
-
-    virtual char const * what()
-    {
-        return msg.c_str();
-    }
 };
 
 

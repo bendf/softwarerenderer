@@ -13,6 +13,13 @@ struct AttribIndex
     bool operator!=(const AttribIndex& other) const;
 };
 
+struct Attrib
+{
+    glm::vec3 pos;
+    glm::vec3 uv;
+    glm::vec3 norm;
+};
+
 
 class Model
 {

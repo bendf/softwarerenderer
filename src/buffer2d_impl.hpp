@@ -24,21 +24,19 @@ T Buffer2D<T>::get(int x, int y) const
     }
     else 
     {
-        throw buffer2d_out_of_range(x,y, _width,_height);
+        return T{};
     }
 }
 
 template<typename T>
-void Buffer2D<T>::set(int x, int y, T value)
+bool Buffer2D<T>::set(int x, int y, T value)
 {
-    if(isInBounds(x,y))
+    bool ib = isInBounds(x,y);
+    if(ib)
     {
         data[(y*_width)+x] = value;
     } 
-    else 
-    {
-        throw buffer2d_out_of_range(x,y,_width,_height);
-    }
+    return ib;
 }
 
 template<typename T>

@@ -1,161 +1,202 @@
-#include <regex>
+#include <tuple>
 #include <iostream>
-#include <iterator>
-#include <sstream>
-#include <glm/glm.hpp>
-#include <exception>
-#include <functional>
+#include <utility>
 
-class RasterBox
+/*
+void print() 
 {
-    private:
-    glm::ivec2 min;
-    glm::ivec2 max;
-    public:
-    RasterBox(const glm::ivec2& min, const glm::ivec2& max) : min(min) , max(max) {}
-   class iterator {
-        public:
-        RasterBox* box;
-        glm::ivec2 current;
-        iterator(RasterBox* box, glm::ivec2 current) : box(box), current(current) {}
-        iterator(const iterator& other) : box(other.box), current(other.current) {}
-        iterator operator=(const iterator& other) {box = other.box; current = other.current; return *this;}
-        ~iterator() {}
-        glm::ivec2 operator*() {return current;}
-        iterator operator++() 
-        { 
-            if(current.x == box->max.x)
-            {
-                current.x = box->min.x;
-                current.y++;
-            }
-            else 
-            {
-                current.x++;
-            }
-            return *this;
-        }
-        bool operator==(const iterator& other) { return current == other.current; }
-        bool operator!=(const iterator& other) { return !(*this == other); }
-    };
-    iterator begin() { return iterator(this, min);}
-    iterator end() { return iterator(this, glm::ivec2(min.x, max.y+1));}
+    std::cout << "empty overload reached!\n";
+}
+
+template<typename S, typename ...Ts>
+void print(S first, Ts ...rest)
+{
+    std::cout << first << "\n";
+    print(rest...);
+}
+
+template<typename T, size_t ...N>
+auto print(T tuple) ->  decltype (std::get<0>(tuple), void())
+{
+    std::cout << "tuple overload\n";
+    print(std::get<N>(tuple)...);
+}
+
+
+
+int main()
+{
+    auto t0 = std::make_tuple("Hello", "There", "Bob", "How's", "it", "going?"); 
+    print<decltype(t0),0,1,2>(t0);
+}
+*/
+
+/*
+template<int N>
+int realise()
+{
+    return N;
+}
+
+void print() 
+{
+    std::cout << "Empty print overload\n";
+}
+
+template<typename S, typename ...T>
+void print(S first, T... rest)
+{
+    std::cout << first << "\n";
+    print(rest...);
+}
+
+template<int ...N>
+void printIntPack()
+{
+    std::cout << "printIntPack\n";
+   print(realise<N>()...); 
+}
+
+int main()
+{
+    printIntPack<1,7,5>();
+}
+*/
+
+/*
+template<int N>
+int realise()
+{
+    return N;
+}
+
+template<int ...Ns> struct sequence{};
+template<int ...Ns> struct sequence_gen;
+
+template<int I, int ...Ns>
+struct sequence_gen<I, Ns...>
+{
+
+    using type = typename sequence_gen<I-1, I-1, Ns...>::type;
+
+};
+
+template<int ...Ns>
+struct sequence_gen<0, Ns...>
+{
+    using type = sequence<Ns...>;
 };
 
 
+template<int N>
+using sequence_t = typename sequence_gen<N>::type;
 
-std::istream& operator>>(std::istream& stream, glm::vec3& v)
+void print()
 {
-	return stream >> v.x >> v.y >> v.z;	
+}
+template<typename S, typename ... Ts>
+void print(S first, Ts ...rest)
+{
+    std::cout << first << "\n";
+    print(rest...);
 }
 
-std::istream& operator>>(std::istream& stream, const char(&lit))
+//Matches a sequence with some non-zero number of template args
+template<int ...Ns>
+void print(sequence<Ns...> seq)
 {
-	char read;
-	stream >> read;
-	if(read != lit)
-	{
-	    stream.setstate(std::ios::failbit);	
-	}
-	
-	return stream;
+    print(realise<Ns>()...);    
 }
 
-std::ostream& operator<<(std::ostream& stream, const glm::vec3& v)
+int main()
 {
-	return stream << "(" << v.x << "," << v.y << "," << v.z << ")";
+    print(sequence_t<0>{});
 }
 
-struct AttribIndex
+*/
+
+/*
+template<int ...Ns> struct sequence{};
+template<int ...Ns> struct sequence_gen;
+
+template<int I, int ...Ns> 
+struct sequence_gen<I, Ns...>
 {
-	size_t pos_index;	
-	size_t uv_index;	
-	size_t norm_index;	
+    using type = typename sequence_gen<I-1, I-1, Ns...>::type;
 };
 
-std::ostream& operator<<(std::ostream& stream, const AttribIndex& ai)
+template<int ...Ns>
+struct sequence_gen<0, Ns...>
 {
-	return stream << "[" << ai.pos_index << ":" << ai.uv_index << ":" << ai.norm_index << "]";
+    using type = sequence<Ns...>;
+};
+
+template<int N>
+using sequence_t = typename sequence_gen<N>::type;
+
+
+*/
+
+/*
+void print() {}
+
+template<typename T, typename ...Ts>
+void print(T first, Ts ...rest)
+{
+    std::cout << first << "\n";
+    print(rest...);
 }
 
-
-void doThing(const std::string &str)
+template<typename T, size_t ...Is>
+void print_tuple(T tuple, std::index_sequence<Is...> seq)
 {
-	if(str.length() > 0) 
-	{
-		std::stringstream ss(str);
-		std::string type;
-		ss >> type;
-		ss.exceptions(std::ios::failbit); 
+    print(std::get<Is>(tuple)...);
+}
 
-		if(type == "f")
-		{
-			AttribIndex a,b,c;
-			ss >> a.pos_index >> '/' >> a.uv_index >> '/' >> a.norm_index; 
-			ss >> b.pos_index >> '/' >> b.uv_index >> '/' >> b.norm_index; 
-			ss >> c.pos_index >> '/' >> c.uv_index >> '/' >> c.norm_index; 
-
-			std::cout <<  "Face: " << a << " , " << b  << " , " << c << "\n";
-				
-		}
-		else if(type == "v")
-		{
-			glm::vec3 v;
-			ss >> v;
-			std::cout << "Position: " << v << "\n";
-		}
-		else if(type == "vt")
-		{
-			glm::vec3 v;
-			ss >> v;
-			std::cout << "UV: " <<  v << "\n";
-		}
-		else if(type == "vn")
-		{
-			glm::vec3 v;
-			ss >> v;
-			std::cout << "Normal: " << v << "\n";
-		}
-	}
-
+template<typename ...Ts>
+void print(std::tuple<Ts...> tuple)
+{
+    print_tuple(tuple, std::index_sequence_for<Ts...>{});
 }
 
 
 int main()
 {
-
-    
-    RasterBox r{glm::ivec2(10,10), glm::ivec2(30,50)};
-    for(auto p : r)
-    {
-        std::cout << "(" << p.x << "," << p.y << ")" << "\n";
-    }
-     
-
-    //Grab every character from
-//    std::stringstream ss;
-//    std::noskipws(std::cin);
-//    std::copy(std::istream_iterator<char>(std::cin),
-//              std::istream_iterator<char>(),
-//              std::ostream_iterator<char>(ss));
-//
-//    std::string s = ss.str();
-//    std::regex re("\n");
-//
-//                  //[](const std::string& a) { std::cout << a << " <--- one-line \n";});
-//    //An iterator which will give all tokens, (aka lines) in string
-//    try 
-//    {
-//        std::for_each(std::sregex_token_iterator(s.begin(), s.end(), re, -1),
-//                      std::sregex_token_iterator(),
-//                      doThing);
-//    }
-//
-//    catch(std::ios_base::failure f)
-//    {
-//        std::cout << "Error, malformed obj file:\n";
-//		std::cout << f.what() << "\n";
-//    }
+    auto t0 = std::make_tuple("Hello", "there", "bob", "yo", "I", "wanna", "be", "the", "very", "best", "like", "no-one", "ever", "was", 7);
+    print(t0);
 
 }
 
+*/
+template<typename ...Ts>
+class AttribBundle : public std::tuple<Ts...>
+{
+    public:
+    AttribBundle(Ts ...args) : std::tuple<Ts...>(args...) {}
+    template<size_t ...Ns> AttribBundle mult(const float o, std::index_sequence<Ns...> seq)
+    {
+        return AttribBundle((o*std::get<Ns>(*this))...);
+    }
+    AttribBundle operator*(const float o)
+    {
+        return mult(o,std::index_sequence_for<Ts...>{});
+    }
+
+    template<size_t ...Ns> 
+    AttribBundle add(const AttribBundle& other, std::index_sequence<Ns...> seq)
+    {
+        return AttribBundle((std::get<Ns>(*this) + std::get<Ns>(other))...);
+    }
+    AttribBundle operator+(const AttribBundle& other)
+    {
+        return add(other, std::index_sequence_for<Ts...>{});
+    }
+};
+
+int main()
+{
+    AttribBundle<float,float> a(3.0,2.0);
+    AttribBundle<float,float> b(1.0, 5.0f);
+    auto c = (a + b) * 5.0f;
+    std::cout << std::get<0>(c) << "," << std::get<1>(c) << "\n";
+}
