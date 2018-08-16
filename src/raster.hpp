@@ -3,32 +3,27 @@
 #include <glm/glm.hpp>
 #include <vector>
 #include <array>
+#include "attributes.hpp"
 
-glm::vec3 barycentricCoordinates2D(const glm::vec2 p0, const glm::vec2 p1, const glm::vec2 p2, const glm::vec2 p);
+glm::vec3 barycentricCoordinates2D(const glm::vec2 p0,
+                                   const glm::vec2 p1, 
+                                   const glm::vec2 p2, 
+                                   const glm::vec2 p);
 
-
-struct PosAttr
+template<typename ...Ts>
+std::vector<Attributes<Ts...>> rasterTriangle(const Attributes<Ts...>& a,
+                                                const Attributes<Ts...>& b,
+                                                const Attributes<Ts...>& c)
 {
-    glm::vec3 pos;
-    PosAttr operator*(const float o) const {return PosAttr{pos * o};}
-    PosAttr operator+(const PosAttr& o) const { return PosAttr{pos + o.pos};}
-};
+    std::vector<Attributes<Ts...>> tmp;
 
-
-
-template<typename T>
-std::vector<T> rasterTriangle(const T& a, const T& b, const T& c)
-{
-    std::vector<T> tmp;
-    std::array<glm::vec3, 3> verts{a.pos,b.pos,c.pos};
-
-    glm::vec3 minPos = glm::min(glm::min(a.pos,b.pos),c.pos);
-    glm::vec3 maxPos = glm::max(glm::max(a.pos,b.pos),c.pos);
+    glm::vec3 minPos = glm::min(glm::min(a.pos(),b.pos()),c.pos());
+    glm::vec3 maxPos = glm::max(glm::max(a.pos(),b.pos()),c.pos());
     for(int x = minPos.x; x < maxPos.x; x++)
     {
         for(int y = minPos.y ; y < maxPos.y; y++)
         {
-            glm::vec3 bc = barycentricCoordinates2D(a.pos, b.pos, c.pos, glm::vec2(x,y)); 
+            auto bc = barycentricCoordinates2D(a.pos(), b.pos(), c.pos(), glm::vec2(x,y)); 
             auto inTriangle = [] (glm::vec3& bc) 
             { 
                 return bc.x >= 0.0f && bc.x < 1.0f &&  bc.y >= 0.0f 
@@ -36,7 +31,7 @@ std::vector<T> rasterTriangle(const T& a, const T& b, const T& c)
             };
             if(inTriangle(bc))
             {
-                T interpolated = (a*bc.x) + (b*bc.y) + (c*bc.z);
+                Attributes<Ts...> interpolated = (a*bc.x) + (b*bc.y) + (c*bc.z);
                 tmp.push_back(interpolated);
             }
         }
