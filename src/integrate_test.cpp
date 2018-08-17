@@ -5,14 +5,14 @@
 #include "model.hpp"
 #include "raster.hpp"
 
-TEST_CASE("integration/head", "[head, model, raster, buffer2d, targa]")
+TEST_CASE("integration/quad", "[quad, model, raster, buffer2d, targa]")
 {
     Buffer2D<Targa::TargaFormat> buf(1000,1000);
 
-    std::fstream f("../obj/african_head.obj");
-    Model head(f);
+    std::fstream f("../obj/african_quad.obj");
+    Model quad(f);
 
-    for(auto attrs : head)
+    for(auto attrs : quad)
     {
         auto& [a,b,c] = attrs;
         auto screenSpace = [&buf](Attributes<glm::vec3,glm::vec3,glm::vec3>& ab)
@@ -48,19 +48,23 @@ TEST_CASE("integration/head", "[head, model, raster, buffer2d, targa]")
 
     }
     
-    std::ofstream tgaOut("images/head_model_red.tga");
+    std::ofstream tgaOut("images/quad_model_red.tga");
     tgaOut <<= buf;
-
 }
 
-TEST_CASE("integration/quad", "[quad, model, raster, buffer2d, targa]")
+
+TEST_CASE("integration/head", "[head, model, raster, buffer2d, targa]")
 {
     Buffer2D<Targa::TargaFormat> buf(1000,1000);
+    Buffer2D<float> depth(1000,1000);
+    std::fstream texture("../obj/african_head_diffuse.tga");
+    Buffer2D<Targa::TargaFormat> tex = Targa::read(texture);
+    depth.clear(-1.0f);
 
-    std::fstream f("../obj/quad.obj");
-    Model quad(f);
+    std::fstream f("../obj/african_head.obj");
+    Model head(f);
 
-    for(auto attrs : quad)
+    for(auto attrs : head)
     {
         auto& [a,b,c] = attrs;
         auto screenSpace = [&buf](Attributes<glm::vec3,glm::vec3,glm::vec3>& ab)
@@ -75,22 +79,30 @@ TEST_CASE("integration/quad", "[quad, model, raster, buffer2d, targa]")
         screenSpace(b);
         screenSpace(c);
 
-        for(auto interpolated : rasterTriangle(a,b,c))
+        auto frag = [&tex,&depth,&buf] (Attributes<glm::vec3,glm::vec3,glm::vec3>& attrs)
         {
-            glm::vec3 pos = interpolated.pos();
+            glm::vec3 pos = std::get<0>(attrs);
+            glm::vec3 norm = std::get<1>(attrs);
+            glm::vec3 uv = std::get<2>(attrs);
+            glm::ivec3 ss = glm::round(pos);
+            glm::vec3 lightDir = glm::normalize(glm::vec3(1.0f));
+            float coefficient = glm::clamp(glm::dot(norm, lightDir), 0.0f, 1.0f); 
+            glm::vec3 texel = tex.get(uv.x*tex.width(), uv.y*tex.height());
+            glm::vec3 ambient = glm::vec3(0.1f);
 
-            int x = std::round(pos.x);
-            int y = std::round(pos.y);
-            
-                if(buf.isInBounds(x,y))
-                {
-                    buf.set(x,y, {255,0,0});
-                }
-        }
+            if(buf.isInBounds(ss.x,ss.y) && depth.get(ss.x,ss.y) < pos.z)
+            {
+                    depth.set(ss.x,ss.y,pos.z);
+                    buf.set(ss.x,ss.y, Targa::TargaFormat(ambient + (texel * coefficient)));
+            }
+        };
+
+        auto fragments = rasterTriangle(a,b,c);
+        std::for_each(fragments.begin(), fragments.end(), frag);
 
     }
     
-    std::ofstream tgaOut("images/quad_model.tga");
+    std::ofstream tgaOut("images/head_model_lit.tga");
     tgaOut <<= buf;
 }
 
