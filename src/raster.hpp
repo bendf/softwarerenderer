@@ -5,15 +5,21 @@
 #include <array>
 #include "attributes.hpp"
 
-glm::vec3 barycentricCoordinates2D(const glm::vec2 p0,
-                                   const glm::vec2 p1, 
-                                   const glm::vec2 p2, 
-                                   const glm::vec2 p);
+glm::vec3 barycentricCoordinates2D
+(
+    const glm::vec2 p0,
+    const glm::vec2 p1, 
+    const glm::vec2 p2, 
+    const glm::vec2 p
+);
 
 template<typename ...Ts>
-std::vector<Attributes<Ts...>> rasterTriangle(const Attributes<Ts...>& a,
-                                                const Attributes<Ts...>& b,
-                                                const Attributes<Ts...>& c)
+std::vector<Attributes<Ts...>> rasterTriangle
+(
+    const Attributes<Ts...>& a,
+    const Attributes<Ts...>& b,
+    const Attributes<Ts...>& c
+)
 {
     std::vector<Attributes<Ts...>> tmp;
 

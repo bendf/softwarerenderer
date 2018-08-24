@@ -10,29 +10,7 @@ TEST_CASE("Quad Model", "[model, io, simple]")
 {
     std::ifstream quad("../obj/quad.obj");
     
-    Model q(quad);
-    REQUIRE(q.positions.at(0) == glm::vec3(-1.0f, -1.0f, 0.0f));
-    REQUIRE(q.positions.at(3) == glm::vec3(1.0f,1.0f,0.0f));
-    REQUIRE(q.uvs.at(0) == glm::vec3(0.0f, 0.0f, 0.0f));
-    REQUIRE(q.uvs.at(3) == glm::vec3(1.0f,1.0f,0.0f));
-    REQUIRE(q.normals.at(0) == glm::vec3(0.0f,0.0f, -1.0f));
-    
-
-    std::tuple<AttribIndex,AttribIndex,AttribIndex>& t0 = q.triangles[0];
-    REQUIRE(std::get<0>(t0) == AttribIndex{1,1,1});
-    REQUIRE(std::get<1>(t0) == AttribIndex{2,2,1});
-    REQUIRE(std::get<2>(t0) == AttribIndex{3,3,1});
+    std::vector<MTri> q = LoadModel(quad);
+    REQUIRE(q.size() == 2);
 }
 
-TEST_CASE("Model", "[model io]")
-{
-    std::ifstream obj("../obj/quad.obj");
-    Model head(obj); 
-
-    for(auto p : head)
-    {
-       REQUIRE(std::get<0>(p) != std::get<1>(p));      
-       REQUIRE(std::get<1>(p) != std::get<2>(p));      
-       REQUIRE(std::get<2>(p) != std::get<0>(p));      
-    }
-}

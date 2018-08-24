@@ -13,7 +13,9 @@ namespace Targa {
 
     TargaFormat::operator glm::vec3()
     {
-        return glm::vec3(float(r)/255.0f, float(b)/255.0f, float(g)/255.0f);
+        return glm::vec3(static_cast<float>(r)/255.0f,
+			 static_cast<float>(g)/255.0f, 
+			 static_cast<float>(b)/255.0f);
     }
 
     TargaHeader::TargaHeader(uint16_t width, uint16_t height)

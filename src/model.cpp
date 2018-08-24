@@ -4,21 +4,10 @@
 #include <functional>
 
 
-bool AttribIndex::operator==(const AttribIndex& o) const
-{
-    return pos == o.pos && uv == o.uv && norm == o.norm;
-}
-
-bool AttribIndex::operator!=(const AttribIndex& o ) const
-{
-    return !(*this == o);
-}
-
 std::istream& operator>>(std::istream& stream, glm::vec3& v)
 {
 	return stream >> v.x >> v.y >> v.z;	
 }
-
 
 std::istream& operator>>(std::istream& stream, const char(&lit))
 {
@@ -37,68 +26,60 @@ std::istream& operator>>(std::istream& stream, AttribIndex& ai)
 	return stream >> ai.pos >> '/' >> ai.uv >> '/' >> ai.norm; 
 }
 
-void Model::parseLine(const std::string& str)
+std::vector<MTri> LoadModel(std::istream& stream)
 {
-    if(str.length() > 0) 
-	{
-		std::stringstream ss(str);
-		std::string type;
-		ss >> type;
-		ss.exceptions(std::ios::failbit); 
+    std::vector<glm::vec3> positions;
+    std::vector<glm::vec3> normals;
+    std::vector<glm::vec3> uvs;
+    std::vector<FaceIndex> faceIndices;
 
-		if(type == "f")
-		{
-            std::tuple<AttribIndex,AttribIndex,AttribIndex>  tri;
-            ss >> std::get<0>(tri) >> std::get<1>(tri) >> std::get<2>(tri);
-            triangles.push_back(tri);  
-				
-		}
-		else if(type == "v")
-		{
-			glm::vec3 v;
-			ss >> v;
-            positions.push_back(v);
-		}
-		else if(type == "vt")
-		{
-			glm::vec3 v;
-			ss >> v;
-            uvs.push_back(v);
-		}
-		else if(type == "vn")
-		{
-			glm::vec3 v;
-			ss >> v;
-            normals.push_back(v);
-		}
-	}
-}
-
-Model::Model(std::istream& stream) : positions{}, normals{}, uvs{}, triangles{}
-{
-    std::stringstream ss;
-    std::noskipws(stream);
-    std::copy(std::istream_iterator<char>(stream),
-              std::istream_iterator<char>(),
-              std::ostream_iterator<char>(ss));
-
-    std::string s = ss.str();
-    std::regex re("\n");
-
-    try 
+    for(std::string s; std::getline(stream,s); !stream.eof())
     {
-        std::for_each(std::sregex_token_iterator(s.begin(), s.end(), re, -1),
-                      std::sregex_token_iterator(),
-                      std::bind(&Model::parseLine, this, std::placeholders::_1));
-    }
-    catch(std::ios_base::failure f)
-    {
-        std::terminate();
+        if(s.length() > 0) 
+        {
+            std::stringstream ss(s);
+            std::string type;
+            ss >> type;
+            ss.exceptions(std::ios::failbit); 
+
+            if(type == "f")
+            {
+                FaceIndex tri;
+                ss >> tri[0] >> tri[1] >> tri[2];
+                faceIndices.push_back(tri);
+            }
+            else if(type == "v")
+            {
+                glm::vec3 v;
+                ss >> v;
+                positions.push_back(v);
+            }
+            else if(type == "vt")
+            {
+                glm::vec3 v;
+                ss >> v;
+                uvs.push_back(v);
+            }
+            else if(type == "vn")
+            {
+                glm::vec3 v;
+                ss >> v;
+                normals.push_back(v);
+            }
+        }                   
     }
 
+    auto attribMaker = [&positions, & normals, & uvs](AttribIndex& ai)
+    {
+        return MVertex{positions[ai.pos-1],normals[ai.norm-1],uvs[ai.uv-1]};
+    };
 
+    auto faceMaker = [attribMaker](FaceIndex& fi)
+    {
+        return MTri{attribMaker(fi[0]), attribMaker(fi[1]), attribMaker(fi[2])};
+    };
 
-
-         
-         
+    std::vector<MTri> temp(faceIndices.size());
+    std::transform(faceIndices.begin(), faceIndices.end(), temp.begin(), faceMaker);
 }
+
