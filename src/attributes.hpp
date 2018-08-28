@@ -10,7 +10,7 @@ class Attributes : public std::tuple<Ts...>
     Attributes() : std::tuple<Ts...>() {}
 
     template<size_t ...Ns> 
-    Attributes mult_impl(float o, std::index_sequence<Ns...> seq) const
+    Attributes mult_impl(float o, std::index_sequence<Ns...>) const
     {
         return Attributes((o*std::get<Ns>(*this))...);
     }
@@ -20,7 +20,7 @@ class Attributes : public std::tuple<Ts...>
     }
 
     template<size_t ...Ns> 
-    Attributes add_impl(const Attributes& other, std::index_sequence<Ns...> seq) 
+    Attributes add_impl(const Attributes& other, std::index_sequence<Ns...>) 
     {
         return Attributes((std::get<Ns>(*this) + std::get<Ns>(other))...);
     }
@@ -29,7 +29,7 @@ class Attributes : public std::tuple<Ts...>
         return add_impl(other, std::index_sequence_for<Ts...>{});
     }
 
-    auto pos() const -> decltype(std::get<0>(*this)) 
+    auto pos() const 
     {
         return std::get<0>(*this);
     }
