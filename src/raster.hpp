@@ -12,15 +12,17 @@ glm::vec3 barycentricCoordinates2D(
     const glm::vec2 p);
 
 template <typename... Ts>
-auto rasterTriangle(
-    const Attributes<Ts...>& a,
-    const Attributes<Ts...>& b,
-    const Attributes<Ts...>& c,
+using Fragment = std::pair<glm::ivec2, AttrTuple<Ts...>>;
+
+template <typename... Ts>
+std::vector<Fragment<Ts...>> rasterTriangle(
+    const AttrTuple<Ts...>& a,
+    const AttrTuple<Ts...>& b,
+    const AttrTuple<Ts...>& c,
     unsigned int width,
     unsigned int height)
 {
-    using Fragment = std::pair<glm::ivec2, Attributes<Ts...>>;
-    std::vector<Fragment> fragments;
+    std::vector<Fragment<Ts...>> fragments;
 
     auto screenSpace = [width,height](glm::vec3 v)
     {
@@ -45,7 +47,7 @@ auto rasterTriangle(
                     && bc.y < 1.0f && bc.z >= 0.0f && bc.y < 1.0f;
             };
             if (inTriangle(bc)) {
-                Attributes<Ts...> interpolated = (a * bc.x) + (b * bc.y) + (c * bc.z);
+                AttrTuple<Ts...> interpolated = (a * bc.x) + (b * bc.y) + (c * bc.z);
                 fragments.push_back(std::make_pair(glm::ivec2(x,y),interpolated));
             }
         }

@@ -2,5 +2,5 @@
 
 
 template<typename ...Is, typename ...Os>
-using VertexShader = std::function<Attributes<Is...>,(Attributes<Os...>);
+using VertexShader = std::function<AttrTuple<Is...>,(AttrTuple<Os...>);
 using FragmentShader = std::function<>;

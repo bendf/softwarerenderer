@@ -1,72 +1,102 @@
 [
 {
   "directory": "/home/ben/Projects/software_render/build",
-  "command": "/usr/bin/c++   -I/home/ben/Projects/software_render/src/include  -g   -o CMakeFiles/buffer2d_test.dir/src/test_main.cpp.o -c /home/ben/Projects/software_render/src/test_main.cpp",
+  "command": "/usr/bin/c++   -I/home/ben/Projects/software_render/src/include  -Wall -Wextra -O3 -g   -o CMakeFiles/integrate_test.dir/src/test_main.cpp.o -c /home/ben/Projects/software_render/src/test_main.cpp",
   "file": "/home/ben/Projects/software_render/src/test_main.cpp"
 },
 {
   "directory": "/home/ben/Projects/software_render/build",
-  "command": "/usr/bin/c++   -I/home/ben/Projects/software_render/src/include  -g   -o CMakeFiles/buffer2d_test.dir/src/buffer2d_test.cpp.o -c /home/ben/Projects/software_render/src/buffer2d_test.cpp",
-  "file": "/home/ben/Projects/software_render/src/buffer2d_test.cpp"
+  "command": "/usr/bin/c++   -I/home/ben/Projects/software_render/src/include  -Wall -Wextra -O3 -g   -o CMakeFiles/integrate_test.dir/src/integrate_test.cpp.o -c /home/ben/Projects/software_render/src/integrate_test.cpp",
+  "file": "/home/ben/Projects/software_render/src/integrate_test.cpp"
 },
 {
   "directory": "/home/ben/Projects/software_render/build",
-  "command": "/usr/bin/c++   -I/home/ben/Projects/software_render/src/include  -g   -o CMakeFiles/buffer2d_test.dir/src/buffer2d.cpp.o -c /home/ben/Projects/software_render/src/buffer2d.cpp",
+  "command": "/usr/bin/c++   -I/home/ben/Projects/software_render/src/include  -Wall -Wextra -O3 -g   -o CMakeFiles/integrate_test.dir/src/buffer2d.cpp.o -c /home/ben/Projects/software_render/src/buffer2d.cpp",
   "file": "/home/ben/Projects/software_render/src/buffer2d.cpp"
 },
 {
   "directory": "/home/ben/Projects/software_render/build",
-  "command": "/usr/bin/c++   -I/home/ben/Projects/software_render/src/include  -g   -o CMakeFiles/model_test.dir/src/test_main.cpp.o -c /home/ben/Projects/software_render/src/test_main.cpp",
-  "file": "/home/ben/Projects/software_render/src/test_main.cpp"
-},
-{
-  "directory": "/home/ben/Projects/software_render/build",
-  "command": "/usr/bin/c++   -I/home/ben/Projects/software_render/src/include  -g   -o CMakeFiles/model_test.dir/src/model.cpp.o -c /home/ben/Projects/software_render/src/model.cpp",
+  "command": "/usr/bin/c++   -I/home/ben/Projects/software_render/src/include  -Wall -Wextra -O3 -g   -o CMakeFiles/integrate_test.dir/src/model.cpp.o -c /home/ben/Projects/software_render/src/model.cpp",
   "file": "/home/ben/Projects/software_render/src/model.cpp"
 },
 {
   "directory": "/home/ben/Projects/software_render/build",
-  "command": "/usr/bin/c++   -I/home/ben/Projects/software_render/src/include  -g   -o CMakeFiles/model_test.dir/src/model_test.cpp.o -c /home/ben/Projects/software_render/src/model_test.cpp",
-  "file": "/home/ben/Projects/software_render/src/model_test.cpp"
-},
-{
-  "directory": "/home/ben/Projects/software_render/build",
-  "command": "/usr/bin/c++   -I/home/ben/Projects/software_render/src/include  -g   -o CMakeFiles/raster_test.dir/src/test_main.cpp.o -c /home/ben/Projects/software_render/src/test_main.cpp",
-  "file": "/home/ben/Projects/software_render/src/test_main.cpp"
-},
-{
-  "directory": "/home/ben/Projects/software_render/build",
-  "command": "/usr/bin/c++   -I/home/ben/Projects/software_render/src/include  -g   -o CMakeFiles/raster_test.dir/src/raster.cpp.o -c /home/ben/Projects/software_render/src/raster.cpp",
+  "command": "/usr/bin/c++   -I/home/ben/Projects/software_render/src/include  -Wall -Wextra -O3 -g   -o CMakeFiles/integrate_test.dir/src/raster.cpp.o -c /home/ben/Projects/software_render/src/raster.cpp",
   "file": "/home/ben/Projects/software_render/src/raster.cpp"
 },
 {
   "directory": "/home/ben/Projects/software_render/build",
-  "command": "/usr/bin/c++   -I/home/ben/Projects/software_render/src/include  -g   -o CMakeFiles/raster_test.dir/src/raster_test.cpp.o -c /home/ben/Projects/software_render/src/raster_test.cpp",
-  "file": "/home/ben/Projects/software_render/src/raster_test.cpp"
-},
-{
-  "directory": "/home/ben/Projects/software_render/build",
-  "command": "/usr/bin/c++   -I/home/ben/Projects/software_render/src/include  -g   -o CMakeFiles/targa_test.dir/src/test_main.cpp.o -c /home/ben/Projects/software_render/src/test_main.cpp",
-  "file": "/home/ben/Projects/software_render/src/test_main.cpp"
-},
-{
-  "directory": "/home/ben/Projects/software_render/build",
-  "command": "/usr/bin/c++   -I/home/ben/Projects/software_render/src/include  -g   -o CMakeFiles/targa_test.dir/src/targa.cpp.o -c /home/ben/Projects/software_render/src/targa.cpp",
+  "command": "/usr/bin/c++   -I/home/ben/Projects/software_render/src/include  -Wall -Wextra -O3 -g   -o CMakeFiles/integrate_test.dir/src/targa.cpp.o -c /home/ben/Projects/software_render/src/targa.cpp",
   "file": "/home/ben/Projects/software_render/src/targa.cpp"
 },
 {
   "directory": "/home/ben/Projects/software_render/build",
-  "command": "/usr/bin/c++   -I/home/ben/Projects/software_render/src/include  -g   -o CMakeFiles/targa_test.dir/src/targa_test.cpp.o -c /home/ben/Projects/software_render/src/targa_test.cpp",
+  "command": "/usr/bin/c++   -I/home/ben/Projects/software_render/src/include  -Wall -Wextra -O3 -g   -o CMakeFiles/buffer2d_test.dir/src/test_main.cpp.o -c /home/ben/Projects/software_render/src/test_main.cpp",
+  "file": "/home/ben/Projects/software_render/src/test_main.cpp"
+},
+{
+  "directory": "/home/ben/Projects/software_render/build",
+  "command": "/usr/bin/c++   -I/home/ben/Projects/software_render/src/include  -Wall -Wextra -O3 -g   -o CMakeFiles/buffer2d_test.dir/src/buffer2d_test.cpp.o -c /home/ben/Projects/software_render/src/buffer2d_test.cpp",
+  "file": "/home/ben/Projects/software_render/src/buffer2d_test.cpp"
+},
+{
+  "directory": "/home/ben/Projects/software_render/build",
+  "command": "/usr/bin/c++   -I/home/ben/Projects/software_render/src/include  -Wall -Wextra -O3 -g   -o CMakeFiles/buffer2d_test.dir/src/buffer2d.cpp.o -c /home/ben/Projects/software_render/src/buffer2d.cpp",
+  "file": "/home/ben/Projects/software_render/src/buffer2d.cpp"
+},
+{
+  "directory": "/home/ben/Projects/software_render/build",
+  "command": "/usr/bin/c++   -I/home/ben/Projects/software_render/src/include  -Wall -Wextra -O3 -g   -o CMakeFiles/model_test.dir/src/test_main.cpp.o -c /home/ben/Projects/software_render/src/test_main.cpp",
+  "file": "/home/ben/Projects/software_render/src/test_main.cpp"
+},
+{
+  "directory": "/home/ben/Projects/software_render/build",
+  "command": "/usr/bin/c++   -I/home/ben/Projects/software_render/src/include  -Wall -Wextra -O3 -g   -o CMakeFiles/model_test.dir/src/model.cpp.o -c /home/ben/Projects/software_render/src/model.cpp",
+  "file": "/home/ben/Projects/software_render/src/model.cpp"
+},
+{
+  "directory": "/home/ben/Projects/software_render/build",
+  "command": "/usr/bin/c++   -I/home/ben/Projects/software_render/src/include  -Wall -Wextra -O3 -g   -o CMakeFiles/model_test.dir/src/model_test.cpp.o -c /home/ben/Projects/software_render/src/model_test.cpp",
+  "file": "/home/ben/Projects/software_render/src/model_test.cpp"
+},
+{
+  "directory": "/home/ben/Projects/software_render/build",
+  "command": "/usr/bin/c++   -I/home/ben/Projects/software_render/src/include  -Wall -Wextra -O3 -g   -o CMakeFiles/raster_test.dir/src/test_main.cpp.o -c /home/ben/Projects/software_render/src/test_main.cpp",
+  "file": "/home/ben/Projects/software_render/src/test_main.cpp"
+},
+{
+  "directory": "/home/ben/Projects/software_render/build",
+  "command": "/usr/bin/c++   -I/home/ben/Projects/software_render/src/include  -Wall -Wextra -O3 -g   -o CMakeFiles/raster_test.dir/src/raster.cpp.o -c /home/ben/Projects/software_render/src/raster.cpp",
+  "file": "/home/ben/Projects/software_render/src/raster.cpp"
+},
+{
+  "directory": "/home/ben/Projects/software_render/build",
+  "command": "/usr/bin/c++   -I/home/ben/Projects/software_render/src/include  -Wall -Wextra -O3 -g   -o CMakeFiles/raster_test.dir/src/raster_test.cpp.o -c /home/ben/Projects/software_render/src/raster_test.cpp",
+  "file": "/home/ben/Projects/software_render/src/raster_test.cpp"
+},
+{
+  "directory": "/home/ben/Projects/software_render/build",
+  "command": "/usr/bin/c++   -I/home/ben/Projects/software_render/src/include  -Wall -Wextra -O3 -g   -o CMakeFiles/targa_test.dir/src/test_main.cpp.o -c /home/ben/Projects/software_render/src/test_main.cpp",
+  "file": "/home/ben/Projects/software_render/src/test_main.cpp"
+},
+{
+  "directory": "/home/ben/Projects/software_render/build",
+  "command": "/usr/bin/c++   -I/home/ben/Projects/software_render/src/include  -Wall -Wextra -O3 -g   -o CMakeFiles/targa_test.dir/src/targa.cpp.o -c /home/ben/Projects/software_render/src/targa.cpp",
+  "file": "/home/ben/Projects/software_render/src/targa.cpp"
+},
+{
+  "directory": "/home/ben/Projects/software_render/build",
+  "command": "/usr/bin/c++   -I/home/ben/Projects/software_render/src/include  -Wall -Wextra -O3 -g   -o CMakeFiles/targa_test.dir/src/targa_test.cpp.o -c /home/ben/Projects/software_render/src/targa_test.cpp",
   "file": "/home/ben/Projects/software_render/src/targa_test.cpp"
 },
 {
   "directory": "/home/ben/Projects/software_render/build",
-  "command": "/usr/bin/c++   -I/home/ben/Projects/software_render/src/include  -g   -o CMakeFiles/scratch.dir/src/scratch.cpp.o -c /home/ben/Projects/software_render/src/scratch.cpp",
+  "command": "/usr/bin/c++   -I/home/ben/Projects/software_render/src/include  -Wall -Wextra -O3 -g   -o CMakeFiles/scratch.dir/src/scratch.cpp.o -c /home/ben/Projects/software_render/src/scratch.cpp",
   "file": "/home/ben/Projects/software_render/src/scratch.cpp"
 },
 {
   "directory": "/home/ben/Projects/software_render/build",
-  "command": "/usr/bin/c++   -I/home/ben/Projects/software_render/src/include  -g   -o CMakeFiles/rvalue.dir/src/rvalue.cpp.o -c /home/ben/Projects/software_render/src/rvalue.cpp",
+  "command": "/usr/bin/c++   -I/home/ben/Projects/software_render/src/include  -Wall -Wextra -O3 -g   -o CMakeFiles/rvalue.dir/src/rvalue.cpp.o -c /home/ben/Projects/software_render/src/rvalue.cpp",
   "file": "/home/ben/Projects/software_render/src/rvalue.cpp"
 }
 ]

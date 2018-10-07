@@ -4,7 +4,7 @@
 #include <tuple>
 #include <vector>
 
-using MVertex = Attributes<glm::vec3, glm::vec3, glm::vec3>;
+using MVertex = AttrTuple<glm::vec3, glm::vec3, glm::vec3>;
 using MTri = std::array<MVertex, 3>;
 
 struct AttribIndex {

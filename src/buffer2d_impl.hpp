@@ -18,14 +18,7 @@ Buffer2D<T>::Buffer2D(int width, int height) : _width{width} , _height{height}
 template<typename T>
 T Buffer2D<T>::get(int x, int y) const
 {
-    if(isInBounds(x,y))
-    {
-        return data[(y*_width) + x];
-    }
-    else 
-    {
-        return T{};
-    }
+    return isInBounds(x,y) ? data[(y*_width) +x] : T{};
 }
 
 template<typename T>
